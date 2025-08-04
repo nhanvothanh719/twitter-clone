@@ -29,3 +29,9 @@ npm install @types/node --save-dev
 ```shell
 npm init @eslint/config@latest
 ```
+
+### 5. Setup config packages
+
+```shell
+npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias rimraf nodemon --save-dev
+```
