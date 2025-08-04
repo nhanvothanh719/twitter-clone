@@ -1,6 +1,11 @@
-type Handle = () => Promise<string>
-const message = 'The application is running!'
-const myFunc: Handle = () => Promise.resolve(message)
+import express from 'express'
+const app = express()
+const port = 3000
 
-myFunc().then((res) => console.log(res))
-myFunc().then(console.log)
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
