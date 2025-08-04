@@ -26,6 +26,7 @@
   "homepage": "https://github.com/nhanvothanh719/nodejs-boilerplate#readme",
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.1.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
