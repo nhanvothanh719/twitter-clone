@@ -37,3 +37,8 @@ npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias
 ```
 
 ### 6. Config `tsconfig.json`
+
+### 7. Add `ESLint` + `Prettier` config files
+
+- Modify `eslint.config.mjs` file
+- Add `.prettierrc` + `.prettierrc` files
