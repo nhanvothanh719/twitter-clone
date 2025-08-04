@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/nhanvothanh719/nodejs-boilerplate#readme",
   "devDependencies": {
+    "@types/node": "^24.1.0",
     "typescript": "^5.9.2"
   }
 }

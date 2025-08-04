@@ -17,3 +17,9 @@ npm init -y
 ```shell
 npm i typescript --save-dev
 ```
+
+### 3. Install TypeScript type definitions for Node.js
+
+```shell
+npm install @types/node --save-dev
+```
