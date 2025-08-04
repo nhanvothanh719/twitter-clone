@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/nhanvothanh719/nodejs-boilerplate/issues"
   },
-  "homepage": "https://github.com/nhanvothanh719/nodejs-boilerplate#readme"
+  "homepage": "https://github.com/nhanvothanh719/nodejs-boilerplate#readme",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
 }
