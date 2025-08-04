@@ -35,3 +35,5 @@ npm init @eslint/config@latest
 ```shell
 npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias rimraf nodemon --save-dev
 ```
+
+### 6. Config `tsconfig.json`
