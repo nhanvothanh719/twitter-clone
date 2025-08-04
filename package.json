@@ -1,0 +1,21 @@
+{
+  "name": "nodejs-boilerplate",
+  "version": "1.0.0",
+  "description": "- Node version: 24.5.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhanvothanh719/nodejs-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nhanvothanh719/nodejs-boilerplate/issues"
+  },
+  "homepage": "https://github.com/nhanvothanh719/nodejs-boilerplate#readme"
+}
