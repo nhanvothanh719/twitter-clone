@@ -48,3 +48,7 @@ npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias
 
 - Add `.editorconfig` file
 - **MEMO**: For VSCode IDE, `EditorConfig for VS Code` extension must be installed
+
+### 9. Config `nodemon`
+
+- Add `nodemon.json` file
