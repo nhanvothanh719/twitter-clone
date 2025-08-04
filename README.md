@@ -23,3 +23,9 @@ npm i typescript --save-dev
 ```shell
 npm install @types/node --save-dev
 ```
+
+### 4. Setup `ESLint`
+
+```shell
+npm init @eslint/config@latest
+```

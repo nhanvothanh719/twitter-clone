@@ -19,7 +19,11 @@
   },
   "homepage": "https://github.com/nhanvothanh719/nodejs-boilerplate#readme",
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
     "@types/node": "^24.1.0",
-    "typescript": "^5.9.2"
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
+    "typescript": "5.8",
+    "typescript-eslint": "^8.38.0"
   }
 }
