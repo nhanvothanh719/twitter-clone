@@ -52,3 +52,5 @@ npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias
 ### 9. Config `nodemon`
 
 - Add `nodemon.json` file
+
+### 10. Modify scripts in `package.json` file
