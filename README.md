@@ -42,3 +42,9 @@ npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias
 
 - Modify `eslint.config.mjs` file
 - Add `.prettierrc` + `.prettierrc` files
+- **MEMO**: For VSCode IDE, `ESLint` and `Prettier - Code formatter` extensions must be installed
+
+### 8. Config editor
+
+- Add `.editorconfig` file
+- **MEMO**: For VSCode IDE, `EditorConfig for VS Code` extension must be installed
