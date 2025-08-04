@@ -54,3 +54,47 @@ npm install prettier eslint-config-prettier eslint-plugin-prettier tsx tsc-alias
 - Add `nodemon.json` file
 
 ### 10. Modify scripts in `package.json` file
+
+### 11. Add `type.d.ts` + `index.ts` files
+
+- Add 2 files in `/src` folder
+
+### 12. Running application
+
+#### 1. Run app in dev env
+
+```shell
+npm run dev
+```
+
+#### 2. Build app (from JS to TS)
+
+```shell
+npm run build
+```
+
+```shell
+npm run start
+```
+
+#### 3. Check for any `ESLint` / `Prettier` errors
+
+- `ESlint`:
+
+  ```shell
+  npm run lint
+  ```
+
+  ```shell
+  npm run lint:fix
+  ```
+
+- `Prettier`:
+
+  ```shell
+  npm run prettier
+  ```
+
+  ```shell
+  npm run prettier:fix
+  ```
