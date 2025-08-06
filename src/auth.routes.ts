@@ -1,5 +1,5 @@
-import express, { Request, Response, NextFunction } from 'express'
-const checkedAuthRouter = express.Router()
+import { Router, Request, Response, NextFunction } from 'express'
+const checkedAuthRouter = Router()
 
 // Defined middlewares
 const checkAuth01 = (req: Request, res: Response, next: NextFunction) => {
