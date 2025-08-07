@@ -22,7 +22,7 @@ class UsersService {
     return { accessToken, refreshToken }
   }
 
-  async isUnqueEmail(email: string) {
+  async isUniqueEmail(email: string) {
     const userWithCheckedEmail = await databaseService.users.findOne({ email })
     return !userWithCheckedEmail
   }

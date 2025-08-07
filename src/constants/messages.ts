@@ -1,3 +1,17 @@
 export const USER_MESSAGE = {
-  VALIDATION_ERROR: 'Invalid input'
+  VALIDATION_ERROR: 'Invalid input',
+  NAME_REQUIRED: 'Name is required',
+  NAME_STRING: 'Name must be a string',
+  NAME_LENGTH: 'Name must be between 2 and 50 characters',
+  EMAIL_REQUIRED: 'Email is required',
+  EMAIL_INVALID: 'Email is invalid',
+  EMAIL_ALREADY_EXISTS: 'Account with this email has already registered!',
+  PASSWORD_REQUIRED: 'Password is required',
+  PASSWORD_STRING: 'Password must be a string',
+  PASSWORD_LENGTH: 'Password must be between 8 and 50 characters',
+  PASSWORD_WEAK: 'Password is not strong enough',
+  CONFIRM_PASSWORD_REQUIRED: 'Password confirmation is required',
+  CONFIRM_PASSWORD_STRING: 'Password confirmation must be a string',
+  CONFIRM_PASSWORD_NOT_MATCH: 'Password confirmation does not match password',
+  DATE_OF_BIRTH_INVALID: 'Date of birth must be a valid ISO8601 date'
 } as const
