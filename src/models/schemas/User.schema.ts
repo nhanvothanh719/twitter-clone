@@ -8,11 +8,11 @@ enum UserVerifyStatus {
 
 interface IUser {
   _id?: ObjectId
-  name?: string
+  name: string
   email: string
   username?: string
   password: string
-  date_of_birth?: Date
+  date_of_birth: Date
   email_verify_token?: string
   forgot_password_token?: string
   verify_status?: UserVerifyStatus
