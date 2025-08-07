@@ -8,6 +8,11 @@ class UsersService {
     const result = await databaseService.users.insertOne(user)
     return result
   }
+
+  async isUnqueEmail(email: string) {
+    const userWithCheckedEmail = await databaseService.users.findOne({ email })
+    return !userWithCheckedEmail
+  }
 }
 
 const usersService = new UsersService()

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
+import usersService from '~/services/users.services'
 import { validate } from '~/utils/validation'
 
 export const validateUserLogin = (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +27,14 @@ const registerValidator = checkSchema({
   email: {
     notEmpty: true,
     isEmail: true,
-    trim: true
+    trim: true,
+    custom: {
+      options: async (value) => {
+        const isUnqueEmail = await usersService.isUnqueEmail(value)
+        if (isUnqueEmail) return true
+        throw new Error(`Account with email ${value} has already registered!`)
+      }
+    }
   },
   password: {
     notEmpty: true,
