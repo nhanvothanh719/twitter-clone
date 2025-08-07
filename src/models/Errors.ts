@@ -1,6 +1,14 @@
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 
+type ErrorsType = Record<
+  string,
+  {
+    msg: string
+    [key: string]: any
+  }
+>
+
 // MEMO: This class is not inherited from the `Error` class
 export class ErrorWithStatus {
   message: string
