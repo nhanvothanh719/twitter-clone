@@ -6,6 +6,7 @@ export const USER_MESSAGE = {
   EMAIL_REQUIRED: 'Email is required',
   EMAIL_INVALID: 'Email is invalid',
   EMAIL_ALREADY_EXISTS: 'Account with this email has already registered!',
+  EMAIL_UNREGISTERED: 'Email has not been registered',
   PASSWORD_REQUIRED: 'Password is required',
   PASSWORD_STRING: 'Password must be a string',
   PASSWORD_LENGTH: 'Password must be between 8 and 50 characters',

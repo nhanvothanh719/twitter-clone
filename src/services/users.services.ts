@@ -18,13 +18,18 @@ class UsersService {
 
     // Create Access Token + Refresh Token
     const userId = result.insertedId.toString()
-    const [accessToken, refreshToken] = await Promise.all([this.signAccessToken(userId), this.signRefreshToken(userId)])
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(userId)
     return { accessToken, refreshToken }
   }
 
   async isUniqueEmail(email: string) {
     const userWithCheckedEmail = await databaseService.users.findOne({ email })
     return !userWithCheckedEmail
+  }
+
+  async login(userId: string) {
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(userId)
+    return { accessToken, refreshToken }
   }
 
   private signAccessToken(userId: string) {
@@ -49,6 +54,10 @@ class UsersService {
         expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN as StringValue) || '100d'
       }
     })
+  }
+
+  private signAccessAndRefreshToken(userId: string) {
+    return Promise.all([this.signAccessToken(userId), this.signRefreshToken(userId)])
   }
 }
 
