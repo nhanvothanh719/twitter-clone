@@ -43,7 +43,7 @@ class UsersService {
     return signToken({
       payload: {
         user_id: userId,
-        token_type: TokenType.RefreshToen
+        token_type: TokenType.RefreshToken
       },
       options: {
         expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN as StringValue) || '100d'
