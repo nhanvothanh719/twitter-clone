@@ -10,7 +10,7 @@ export const validate = (validations: RunnableValidationChains<ValidationChain>)
 
     const errors = validationResult(req)
     if (errors.isEmpty()) {
-      next()
+      return next()
     }
 
     const inputValidationErrors = new InputValidationError({ errors: {} })
