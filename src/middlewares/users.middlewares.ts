@@ -155,12 +155,10 @@ export const validateUserRegistration = validate(registerValidator)
 const accessTokenValidator = checkSchema(
   {
     Authorization: {
-      notEmpty: {
-        errorMessage: USER_MESSAGE.ACCESS_TOKEN_REQUIRED
-      },
+      trim: true,
       custom: {
         options: async (val: string, { req }) => {
-          const accessToken = val.split(' ')[1] // MEMO: ['Bearer', '123...']
+          const accessToken = (val || '').split(' ')[1] // MEMO: ['Bearer', '123...']
           if (!accessToken) {
             // Return error with 401 status code
             throw new ErrorWithStatus({
@@ -196,12 +194,16 @@ export const validateAccessToken = validate(accessTokenValidator)
 const refreshTokenValidator = checkSchema(
   {
     refresh_token: {
-      notEmpty: {
-        errorMessage: USER_MESSAGE.REFRESH_TOKEN_REQUIRED
-      },
+      trim: true,
       custom: {
         options: async (val: string, { req }) => {
           try {
+            if (!val) {
+              throw new ErrorWithStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: USER_MESSAGE.REFRESH_TOKEN_REQUIRED
+              })
+            }
             const [decodedRefreshToken, foundRefreshToken] = await Promise.all([
               verifyToken({ token: val, privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
               databaseService.refreshTokens.findOne({
