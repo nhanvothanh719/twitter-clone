@@ -170,7 +170,10 @@ const accessTokenValidator = checkSchema(
           }
 
           try {
-            const decodedAuthorization = await verifyToken({ token: accessToken })
+            const decodedAuthorization = await verifyToken({
+              token: accessToken,
+              privateKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+            })
             ;(req as Request).decoded_authorization = decodedAuthorization
           } catch (error) {
             if (error instanceof jwt.JsonWebTokenError) {
@@ -200,7 +203,7 @@ const refreshTokenValidator = checkSchema(
         options: async (val: string, { req }) => {
           try {
             const [decodedRefreshToken, foundRefreshToken] = await Promise.all([
-              verifyToken({ token: val }),
+              verifyToken({ token: val, privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string }),
               databaseService.refreshTokens.findOne({
                 token: val
               })
