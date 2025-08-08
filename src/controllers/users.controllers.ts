@@ -1,39 +1,40 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { UserRegistrationRequestBody } from '~/models/schemas/requests/User.requests'
+import { ObjectId } from 'mongodb'
+import { USER_MESSAGE } from '~/constants/messages'
+import { UserLogoutRequestBody, UserRegistrationRequestBody } from '~/models/requests/User.requests'
+import User from '~/models/schemas/User.schema'
 import usersService from '~/services/users.services'
 
-export const loginController = (req: Request, res: Response) => {
-  const HASH_CODE_EMAIL = 'nhanvt@gmail.com'
-  const HASH_CODE_PASSWORD = '1234rewq'
-
-  const { email, password } = req.body
-  if (email === HASH_CODE_EMAIL && password === HASH_CODE_PASSWORD) {
-    // MEMO: Default status is 200
-    return res.json({
-      message: 'Login successfully'
-    })
-  }
-  return res.status(400).json({
-    message: 'Incorrect email or password'
+export const loginController = async (req: Request, res: Response) => {
+  // MEMO: Get `user` field from request which was assigned in `loginValidator`
+  const user = req.user as User
+  const userId = (user._id as ObjectId).toString() // MEMO: Convert from ObjectId to string
+  const result = await usersService.login(userId)
+  return res.json({
+    message: USER_MESSAGE.USER_LOGIN_SUCCESS,
+    result
   })
 }
 
 export const registerController = async (
   req: Request<ParamsDictionary, any, UserRegistrationRequestBody>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
-  try {
-    const result = await usersService.register(req.body)
+  const result = await usersService.register(req.body)
+  return res.json({
+    message: USER_MESSAGE.USER_REGISTER_SUCCESS,
+    result
+  })
+}
+
+export const logoutController = async (req: Request<ParamsDictionary, any, UserLogoutRequestBody>, res: Response) => {
+  const { refresh_token } = req.body
+  const isSuccess = await usersService.logout(refresh_token)
+  if (isSuccess) {
     return res.json({
-      message: 'Register new user successfully',
-      result
-    })
-  } catch (error) {
-    console.error('Failed to register new user: ', error)
-    return res.status(400).json({
-      message: 'Failed to register new user',
-      error: error
+      message: USER_MESSAGE.USER_LOGOUT_SUCCESS
     })
   }
 }
