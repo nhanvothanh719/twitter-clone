@@ -10,6 +10,8 @@ export const defaultErrorHandler = (err: any, req: Request, res: Response, next:
     return res.status(err.status).json(_.omit(err, 'status'))
   }
 
+  // Some properties of Error object are non-enumerable
+  // -> Make sure all info of `err` is displayed in the returned JSON object
   const errPropertyNames = Object.getOwnPropertyNames(err)
   errPropertyNames.forEach((propertyName) => {
     Object.defineProperty(err, propertyName, { enumerable: true })
