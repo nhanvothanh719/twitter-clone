@@ -5,6 +5,12 @@ import { hashPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
 import { StringValue } from 'ms'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import { ObjectId } from 'mongodb'
+import { config } from 'dotenv'
+
+// MEMO: Load `.env` file
+config()
 
 class UsersService {
   async register(payload: UserRegistrationRequestBody) {
@@ -19,6 +25,9 @@ class UsersService {
     // Create Access Token + Refresh Token
     const userId = result.insertedId.toString()
     const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(userId)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: refreshToken, user_id: new ObjectId(userId) })
+    )
     return { accessToken, refreshToken }
   }
 
@@ -29,6 +38,9 @@ class UsersService {
 
   async login(userId: string) {
     const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(userId)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: refreshToken, user_id: new ObjectId(userId) })
+    )
     return { accessToken, refreshToken }
   }
 
