@@ -44,6 +44,11 @@ class UsersService {
     return { accessToken, refreshToken }
   }
 
+  async logout(refreshToken: string) {
+    const result = await databaseService.refreshTokens.deleteOne({ token: refreshToken })
+    return result
+  }
+
   private signAccessToken(userId: string) {
     return signToken({
       payload: {
