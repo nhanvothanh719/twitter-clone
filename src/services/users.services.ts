@@ -28,7 +28,7 @@ class UsersService {
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({ token: refreshToken, user_id: new ObjectId(userId) })
     )
-    return { accessToken, refreshToken }
+    return { access_token: accessToken, refresh_token: refreshToken }
   }
 
   async isUniqueEmail(email: string) {
@@ -41,7 +41,7 @@ class UsersService {
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({ token: refreshToken, user_id: new ObjectId(userId) })
     )
-    return { accessToken, refreshToken }
+    return { access_token: accessToken, refresh_token: refreshToken }
   }
 
   async logout(refreshToken: string) {
