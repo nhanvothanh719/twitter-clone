@@ -4,12 +4,18 @@ import {
   loginController,
   logoutController,
   registerController,
-  resendVerifyEmailController
+  resendVerifyEmailController,
+  forgotPasswordController,
+  verifyForgotPasswordTokenController,
+  resetPasswordController
 } from '~/controllers/users.controllers'
 import {
   validateAccessToken,
   validateEmailVerifyToken,
+  validateForgotPassword,
+  validateForgotPasswordToken,
   validateRefreshToken,
+  validateResetPassword,
   validateUserLogin,
   validateUserRegistration
 } from '~/middlewares/users.middlewares'
@@ -49,5 +55,27 @@ usersRouter.post('/verify-email', validateEmailVerifyToken, wrapRequestHandler(v
  * Body: {}
  */
 usersRouter.post('/resend-verify-email', validateAccessToken, wrapRequestHandler(resendVerifyEmailController))
+/**
+ * Description: Submit email to reset password -> send email to user
+ * Path: /users/forgot-password
+ * Body: { email: string }
+ */
+usersRouter.post('/forgot-password', validateForgotPassword, wrapRequestHandler(forgotPasswordController))
+/**
+ * Description: Verify forgot password token
+ * Path: /users/verify-forgot-password-token
+ * Body: { forgot_password_token: string }
+ */
+usersRouter.post(
+  '/verify-forgot-password-token',
+  validateForgotPasswordToken,
+  wrapRequestHandler(verifyForgotPasswordTokenController)
+)
+/**
+ * Description: Reset password
+ * Path: /users/reset-password
+ * Body: { forgot_password_token: string, password: string, confirm_password: string }
+ */
+usersRouter.post('/reset-password', validateResetPassword, wrapRequestHandler(resetPasswordController))
 
 export default usersRouter
