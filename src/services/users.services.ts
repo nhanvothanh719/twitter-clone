@@ -30,7 +30,7 @@ class UsersService {
     const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(userId.toString())
     await databaseService.refreshTokens.insertOne(new RefreshToken({ token: refreshToken, user_id: userId }))
 
-    // TODO: Send email
+    // TODO: Send verify email
     console.log('>>> Email verify token: ', emailVerifyToken)
 
     return { access_token: accessToken, refresh_token: refreshToken }
@@ -74,6 +74,28 @@ class UsersService {
     )
 
     return { access_token: accessToken, refresh_token: refreshToken }
+  }
+
+  async resendVerifyEmail(userId: string) {
+    const newEmailVerifyToken = await this.signEmailVerifyToken(userId)
+
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          email_verify_token: newEmailVerifyToken
+        },
+        // MEMO: Set the value `updated_at` to the time the db updating value in document
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+
+    // TODO: Resend verify email
+    console.log('>>> Email verify token: ', newEmailVerifyToken)
+
+    return true
   }
 
   private signAccessToken(userId: string) {

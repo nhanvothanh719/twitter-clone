@@ -1,9 +1,10 @@
 import { Router } from 'express'
 import {
-  emailVerifyController,
+  verifyEmailController,
   loginController,
   logoutController,
-  registerController
+  registerController,
+  resendVerifyEmailController
 } from '~/controllers/users.controllers'
 import {
   validateAccessToken,
@@ -40,6 +41,13 @@ usersRouter.post('/logout', validateAccessToken, validateRefreshToken, wrapReque
  * Path: /users/verify-email
  * Body: { email_verify_token: string }
  */
-usersRouter.post('/verify-email', validateEmailVerifyToken, wrapRequestHandler(emailVerifyController))
+usersRouter.post('/verify-email', validateEmailVerifyToken, wrapRequestHandler(verifyEmailController))
+/**
+ * Description: Resend verify email
+ * Path: /users/resend-verify-email
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: {}
+ */
+usersRouter.post('/resend-verify-email', validateAccessToken, wrapRequestHandler(resendVerifyEmailController))
 
 export default usersRouter
