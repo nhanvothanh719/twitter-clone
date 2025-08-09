@@ -98,6 +98,41 @@ class UsersService {
     return true
   }
 
+  async forgotPassword(user_id: string) {
+    const forgotPasswordToken = await this.signForgotPasswordToken(user_id)
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: {
+          forgot_password_token: forgotPasswordToken,
+          updated_at: new Date()
+        }
+      }
+    )
+
+    //TODO: Send email including link for password reset
+    console.log('>>> Forgot password token: ', forgotPasswordToken)
+
+    return true
+  }
+
+  async resetPassword(userId: string, password: string) {
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(userId)
+      },
+      {
+        $set: {
+          password: hashPassword(password),
+          forgot_password_token: '',
+          updated_at: new Date()
+        }
+      }
+    )
+  }
+
   private signAccessToken(userId: string) {
     return signToken({
       payload: {
@@ -136,7 +171,20 @@ class UsersService {
       },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
       options: {
-        expiresIn: (process.env.REFRESH_TOKEN_EXPIRES_IN as StringValue) || '100d'
+        expiresIn: (process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN as StringValue) || '100d'
+      }
+    })
+  }
+
+  private signForgotPasswordToken(userId: string) {
+    return signToken({
+      payload: {
+        user_id: userId,
+        token_type: TokenType.ForgotPasswordToken
+      },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      options: {
+        expiresIn: (process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as StringValue) || '100d'
       }
     })
   }

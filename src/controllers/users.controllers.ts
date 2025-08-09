@@ -5,11 +5,14 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 import {
+  ForgotPasswordRequestBody,
+  ResetPasswordRequestBody,
   TokenPayload,
   UserLoginRequestBody,
   UserLogoutRequestBody,
   UserRegistrationRequestBody,
-  VerifyEmailRequestBody
+  VerifyEmailRequestBody,
+  VerifyForgotPasswordTokenRequestBody
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
@@ -92,5 +95,37 @@ export const resendVerifyEmailController = async (req: Request, res: Response) =
   await usersService.resendVerifyEmail(user_id)
   return res.json({
     message: USER_MESSAGE.RESEND_EMAIL_VERIFY_SUCCESS
+  })
+}
+
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
+  res: Response
+) => {
+  const { _id } = req.user as User
+  await usersService.forgotPassword((_id as ObjectId).toString())
+  return res.json({
+    message: USER_MESSAGE.RESET_PASSWORD_CHECK_EMAIL
+  })
+}
+
+export const verifyForgotPasswordTokenController = async (
+  req: Request<ParamsDictionary, any, VerifyForgotPasswordTokenRequestBody>,
+  res: Response
+) => {
+  return res.json({
+    message: USER_MESSAGE.FORGOT_PASSWORD_VERIFY_SUCCESS
+  })
+}
+
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordRequestBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+  const { password } = req.body
+  await usersService.resetPassword(user_id, password)
+  return res.json({
+    message: USER_MESSAGE.RESET_PASSWORD_SUCCESS
   })
 }
