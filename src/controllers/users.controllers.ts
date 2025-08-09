@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { result } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
@@ -127,5 +128,14 @@ export const resetPasswordController = async (
   await usersService.resetPassword(user_id, password)
   return res.json({
     message: USER_MESSAGE.RESET_PASSWORD_SUCCESS
+  })
+}
+
+export const getCurrentUserInfoController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const user = await usersService.getPublicUserInfoById(user_id)
+  return res.json({
+    message: USER_MESSAGE.GET_USER_INFO_SUCCESS,
+    result: user
   })
 }

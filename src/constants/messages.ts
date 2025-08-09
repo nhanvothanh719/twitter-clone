@@ -33,4 +33,5 @@ export const USER_MESSAGE = {
   FORGOT_PASSWORD_TOKEN_NOT_EXIST: 'Forgot password token does not exist',
   FORGOT_PASSWORD_TOKEN_INVALID: 'Invalid forgot password token',
   FORGOT_PASSWORD_VERIFY_SUCCESS: 'Forgot password token is valid',
+  GET_USER_INFO_SUCCESS: 'Get user info successfully'
 } as const
