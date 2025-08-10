@@ -10,6 +10,7 @@ import {
   GetUserProfileByUsernameRequestParams,
   ResetPasswordRequestBody,
   TokenPayload,
+  UnfollowRequestParams,
   UpdateUserInfoRequestBody,
   UserLoginRequestBody,
   UserLogoutRequestBody,
@@ -167,6 +168,13 @@ export const getUserProfileController = async (req: Request<GetUserProfileByUser
 export const followController = async (req: Request<ParamsDictionary, any, FollowRequestBody>, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { followed_user_id } = req.body
-  const successMessage = await usersService.follow(user_id, followed_user_id)
-  return res.json(successMessage)
+  const result = await usersService.follow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const unfollowController = async (req: Request<UnfollowRequestParams>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.params
+  const result = await usersService.unfollow(user_id, followed_user_id)
+  return res.json(result)
 }

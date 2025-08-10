@@ -11,7 +11,8 @@ import {
   getCurrentUserInfoController,
   updateCurrentUserInfoController,
   getUserProfileController,
-  followController
+  followController,
+  unfollowController
 } from '~/controllers/users.controllers'
 import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
@@ -22,6 +23,7 @@ import {
   validateForgotPasswordToken,
   validateRefreshToken,
   validateResetPassword,
+  validateUnfollowedUser,
   validateUpdateCurrentUserInfo,
   validateUserLogin,
   validateUserRegistration,
@@ -143,6 +145,19 @@ usersRouter.post(
   validateVerifiedUser,
   validateFollowedUser,
   wrapRequestHandler(followController)
+)
+
+/**
+ * Description: Unfollow one user
+ * Path: /users/follow/:followed_user_id
+ * Header: { Authorization: Bearer <access_token> }
+ */
+usersRouter.delete(
+  '/follow/:followed_user_id',
+  validateAccessToken,
+  validateVerifiedUser,
+  validateUnfollowedUser,
+  wrapRequestHandler(unfollowController)
 )
 
 export default usersRouter

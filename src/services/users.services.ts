@@ -222,6 +222,23 @@ class UsersService {
     return { message: USER_MESSAGE.USER_FOLLOW_SUCCESS }
   }
 
+  async unfollow(userId: string, followedUserId: string) {
+    const follower = await databaseService.followers.findOne({
+      user_id: new ObjectId(userId),
+      followed_user_id: new ObjectId(followedUserId)
+    })
+    if (!follower) {
+      return {
+        message: USER_MESSAGE.USER_FOLLOW_NOT_EXIST
+      }
+    }
+    await databaseService.followers.deleteOne({
+      user_id: new ObjectId(userId),
+      followed_user_id: new ObjectId(followedUserId)
+    })
+    return { message: USER_MESSAGE.USER_UNFOLLOW_SUCCESS }
+  }
+
   private signAccessToken({ user_id, verify_status }: { user_id: string; verify_status: UserVerifyStatus }) {
     return signToken({
       payload: {

@@ -42,11 +42,13 @@ export const USER_MESSAGE = {
   FORGOT_PASSWORD_TOKEN_NOT_EXIST: 'Forgot password token does not exist',
   FORGOT_PASSWORD_TOKEN_INVALID: 'Invalid forgot password token',
   FORGOT_PASSWORD_VERIFY_SUCCESS: 'Forgot password token is valid',
+  USER_ID_INVALID: 'Invalid user id',
   USER_NOT_FOUND: 'User not found',
   USER_NOT_VERIFIED: 'User is not verified',
   USER_GET_INFO_SUCCESS: 'Get user info successfully',
   USER_UPDATE_INFO_SUCCESS: 'Update user info successfully',
-  USER_FOLLOW_SUCCESS: 'You are following this user',
+  USER_FOLLOW_SUCCESS: 'Follow this user successfully',
   USER_FOLLOW_EXIST: 'You have already followed this user',
-  USER_ID_INVALID: 'Invalid user id'
+  USER_FOLLOW_NOT_EXIST: 'You have not followed this user yet',
+  USER_UNFOLLOW_SUCCESS: 'Unfollow this user successfully'
 } as const
