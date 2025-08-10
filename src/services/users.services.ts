@@ -8,6 +8,9 @@ import { StringValue } from 'ms'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
+import { ErrorWithStatus } from '~/models/Errors'
+import { HTTP_STATUS } from '~/constants/httpStatuses'
+import { USER_MESSAGE } from '~/constants/messages'
 
 // MEMO: Load `.env` file
 config()
@@ -23,6 +26,7 @@ class UsersService {
     const user = new User({
       ...payload,
       _id: userId,
+      username: `user_${userId.toString()}`,
       password: hashPassword(payload.password),
       date_of_birth: new Date(payload.date_of_birth),
       email_verify_token: emailVerifyToken
@@ -176,6 +180,28 @@ class UsersService {
         }
       }
     )
+    return user
+  }
+
+  async getUserProfileByUsername(username: string) {
+    const user = await databaseService.users.findOne(
+      { username },
+      {
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0,
+          created_at: 0,
+          updated_at: 0
+        }
+      }
+    )
+    if (!user) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: USER_MESSAGE.USER_NOT_FOUND
+      })
+    }
     return user
   }
 

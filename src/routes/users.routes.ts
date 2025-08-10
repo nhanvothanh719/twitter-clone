@@ -9,7 +9,8 @@ import {
   verifyForgotPasswordTokenController,
   resetPasswordController,
   getCurrentUserInfoController,
-  updateCurrentUserInfoController
+  updateCurrentUserInfoController,
+  getUserProfileController
 } from '~/controllers/users.controllers'
 import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
@@ -121,4 +122,11 @@ usersRouter.patch(
   ]),
   wrapRequestHandler(updateCurrentUserInfoController)
 )
+
+/**
+ * Description: Get user profile
+ * Path: /:username
+ */
+usersRouter.get('/:username', wrapRequestHandler(getUserProfileController))
+
 export default usersRouter

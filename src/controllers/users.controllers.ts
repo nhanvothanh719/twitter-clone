@@ -6,6 +6,7 @@ import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 import {
   ForgotPasswordRequestBody,
+  GetUserProfileByUsernameRequestBody,
   ResetPasswordRequestBody,
   TokenPayload,
   UpdateUserInfoRequestBody,
@@ -150,4 +151,14 @@ export const updateCurrentUserInfoController = async (
   const { user_id } = req.decoded_authorization as TokenPayload
   const user = await usersService.updateUserInfo(user_id, req.body)
   return res.json({ message: USER_MESSAGE.USER_UPDATE_INFO_SUCCESS, result: user })
+}
+
+// MEMO: `GetUserProfileByUsernameRequestBody` interface replaces for `ParamsDictionary` interface
+export const getUserProfileController = async (req: Request<GetUserProfileByUsernameRequestBody>, res: Response) => {
+  const { username } = req.params
+  const user = await usersService.getUserProfileByUsername(username)
+  return res.json({
+    message: USER_MESSAGE.USER_GET_INFO_SUCCESS,
+    result: user
+  })
 }

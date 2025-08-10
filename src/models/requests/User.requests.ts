@@ -47,6 +47,10 @@ export interface UpdateUserInfoRequestBody {
   cover_photo?: string
 }
 
+export interface GetUserProfileByUsernameRequestBody {
+  username: string
+}
+
 export interface TokenPayload extends JwtPayload {
   user_id: string
   verify_status: UserVerifyStatus
