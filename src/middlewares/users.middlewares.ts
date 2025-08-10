@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
+import { USERNAME_REGEX } from '~/constants/regex'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
@@ -442,12 +443,16 @@ const updateCurrentUserInfoValidator = checkSchema(
         errorMessage: USER_MESSAGE.USERNAME_STRING
       },
       trim: true,
-      isLength: {
-        options: {
-          min: 1,
-          max: 20
-        },
-        errorMessage: USER_MESSAGE.USERNAME_LENGTH
+      custom: {
+        options: async (value: string, { req }) => {
+          if (!USERNAME_REGEX.test(value)) {
+            throw Error(USER_MESSAGE.USERNAME_INVALID)
+          }
+          const user = await databaseService.users.findOne({ username: value })
+          if (user) {
+            throw Error(USER_MESSAGE.USERNAME_EXIST)
+          }
+        }
       }
     },
     bio: {
