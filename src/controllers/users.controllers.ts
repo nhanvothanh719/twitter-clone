@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { result } from 'lodash'
+import _ from 'lodash'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
@@ -9,6 +9,7 @@ import {
   ForgotPasswordRequestBody,
   ResetPasswordRequestBody,
   TokenPayload,
+  UpdateUserInfoRequestBody,
   UserLoginRequestBody,
   UserLogoutRequestBody,
   UserRegistrationRequestBody,
@@ -138,7 +139,26 @@ export const getCurrentUserInfoController = async (req: Request, res: Response) 
   const { user_id } = req.decoded_authorization as TokenPayload
   const user = await usersService.getPublicUserInfoById(user_id)
   return res.json({
-    message: USER_MESSAGE.GET_USER_INFO_SUCCESS,
+    message: USER_MESSAGE.USER_GET_INFO_SUCCESS,
     result: user
   })
+}
+
+export const updateCurrentUserInfoController = async (
+  req: Request<ParamsDictionary, any, UpdateUserInfoRequestBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const payload = _.pick(req.body, [
+    'name',
+    'username',
+    'date_of_birth',
+    'bio',
+    'address',
+    'website',
+    'avatar',
+    'cover_photo'
+  ])
+  const user = await usersService.updateUserInfo(user_id, payload)
+  return res.json({ message: USER_MESSAGE.USER_UPDATE_INFO_SUCCESS, result: user })
 }

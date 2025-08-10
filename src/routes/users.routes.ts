@@ -8,7 +8,8 @@ import {
   forgotPasswordController,
   verifyForgotPasswordTokenController,
   resetPasswordController,
-  getCurrentUserInfoController
+  getCurrentUserInfoController,
+  updateCurrentUserInfoController
 } from '~/controllers/users.controllers'
 import {
   validateAccessToken,
@@ -17,8 +18,10 @@ import {
   validateForgotPasswordToken,
   validateRefreshToken,
   validateResetPassword,
+  validateUpdateCurrentUserInfo,
   validateUserLogin,
-  validateUserRegistration
+  validateUserRegistration,
+  validateVerifiedUser
 } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -93,4 +96,17 @@ usersRouter.post('/reset-password', validateResetPassword, wrapRequestHandler(re
  */
 usersRouter.get('/me', validateAccessToken, wrapRequestHandler(getCurrentUserInfoController))
 
+/**
+ * Description: Update current user info
+ * Path: /users/me
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: { avatar, ... }
+ */
+usersRouter.patch(
+  '/me',
+  validateAccessToken,
+  validateVerifiedUser,
+  validateUpdateCurrentUserInfo,
+  wrapRequestHandler(updateCurrentUserInfoController)
+)
 export default usersRouter
