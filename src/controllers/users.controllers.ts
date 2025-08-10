@@ -23,7 +23,7 @@ export const loginController = async (req: Request<ParamsDictionary, any, UserLo
   // MEMO: Get `user` field from request which was assigned in `loginValidator`
   const user = req.user as User
   const userId = (user._id as ObjectId).toString() // MEMO: Convert from ObjectId to string
-  const result = await usersService.login(userId)
+  const result = await usersService.login({ user_id: userId, verify_status: user.verify_status })
   return res.json({
     message: USER_MESSAGE.USER_LOGIN_SUCCESS,
     result
@@ -103,8 +103,11 @@ export const forgotPasswordController = async (
   req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
   res: Response
 ) => {
-  const { _id } = req.user as User
-  await usersService.forgotPassword((_id as ObjectId).toString())
+  const { _id, verify_status } = req.user as User
+  await usersService.forgotPassword({
+    user_id: (_id as ObjectId).toString(),
+    verify_status
+  })
   return res.json({
     message: USER_MESSAGE.RESET_PASSWORD_CHECK_EMAIL
   })

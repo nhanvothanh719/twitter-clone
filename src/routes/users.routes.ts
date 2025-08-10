@@ -30,12 +30,14 @@ const usersRouter = Router()
  * Body: { email: string, password: string }
  */
 usersRouter.post('/login', validateUserLogin, wrapRequestHandler(loginController))
+
 /**
  * Description: Register a new user
  * Path: /users/register
  * Body: { name: string, email: string, password: string, confirm_password: string, date_of_birth: string }
  */
 usersRouter.post('/register', validateUserRegistration, wrapRequestHandler(registerController))
+
 /**
  * Description: Logout
  * Path: /users/logout
@@ -43,12 +45,14 @@ usersRouter.post('/register', validateUserRegistration, wrapRequestHandler(regis
  * Body: { refresh_token: string }
  */
 usersRouter.post('/logout', validateAccessToken, validateRefreshToken, wrapRequestHandler(logoutController))
+
 /**
  * Description: Verify user's email
  * Path: /users/verify-email
  * Body: { email_verify_token: string }
  */
 usersRouter.post('/verify-email', validateEmailVerifyToken, wrapRequestHandler(verifyEmailController))
+
 /**
  * Description: Resend verify email
  * Path: /users/resend-verify-email
@@ -56,12 +60,14 @@ usersRouter.post('/verify-email', validateEmailVerifyToken, wrapRequestHandler(v
  * Body: {}
  */
 usersRouter.post('/resend-verify-email', validateAccessToken, wrapRequestHandler(resendVerifyEmailController))
+
 /**
  * Description: Submit email to reset password -> send email to user
  * Path: /users/forgot-password
  * Body: { email: string }
  */
 usersRouter.post('/forgot-password', validateForgotPassword, wrapRequestHandler(forgotPasswordController))
+
 /**
  * Description: Verify forgot password token
  * Path: /users/verify-forgot-password-token
@@ -72,12 +78,14 @@ usersRouter.post(
   validateForgotPasswordToken,
   wrapRequestHandler(verifyForgotPasswordTokenController)
 )
+
 /**
  * Description: Reset password
  * Path: /users/reset-password
  * Body: { forgot_password_token: string, password: string, confirm_password: string }
  */
 usersRouter.post('/reset-password', validateResetPassword, wrapRequestHandler(resetPasswordController))
+
 /**
  * Description: Get current user info
  * Path: /users/me
