@@ -11,6 +11,7 @@ import {
   getCurrentUserInfoController,
   updateCurrentUserInfoController
 } from '~/controllers/users.controllers'
+import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
   validateAccessToken,
   validateEmailVerifyToken,
@@ -23,6 +24,7 @@ import {
   validateUserRegistration,
   validateVerifiedUser
 } from '~/middlewares/users.middlewares'
+import { UpdateUserInfoRequestBody } from '~/models/requests/User.requests'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const usersRouter = Router()
@@ -107,6 +109,16 @@ usersRouter.patch(
   validateAccessToken,
   validateVerifiedUser,
   validateUpdateCurrentUserInfo,
+  fieldsFilter<UpdateUserInfoRequestBody>([
+    'name',
+    'username',
+    'date_of_birth',
+    'bio',
+    'address',
+    'website',
+    'avatar',
+    'cover_photo'
+  ]),
   wrapRequestHandler(updateCurrentUserInfoController)
 )
 export default usersRouter

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import _ from 'lodash'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
@@ -149,16 +148,6 @@ export const updateCurrentUserInfoController = async (
   res: Response
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
-  const payload = _.pick(req.body, [
-    'name',
-    'username',
-    'date_of_birth',
-    'bio',
-    'address',
-    'website',
-    'avatar',
-    'cover_photo'
-  ])
-  const user = await usersService.updateUserInfo(user_id, payload)
+  const user = await usersService.updateUserInfo(user_id, req.body)
   return res.json({ message: USER_MESSAGE.USER_UPDATE_INFO_SUCCESS, result: user })
 }
