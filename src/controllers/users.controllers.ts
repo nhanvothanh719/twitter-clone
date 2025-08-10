@@ -5,9 +5,14 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 import {
+  ChangePasswordRequestBody,
+  FollowRequestBody,
   ForgotPasswordRequestBody,
+  GetUserProfileByUsernameRequestParams,
   ResetPasswordRequestBody,
   TokenPayload,
+  UnfollowRequestParams,
+  UpdateUserInfoRequestBody,
   UserLoginRequestBody,
   UserLogoutRequestBody,
   UserRegistrationRequestBody,
@@ -22,7 +27,7 @@ export const loginController = async (req: Request<ParamsDictionary, any, UserLo
   // MEMO: Get `user` field from request which was assigned in `loginValidator`
   const user = req.user as User
   const userId = (user._id as ObjectId).toString() // MEMO: Convert from ObjectId to string
-  const result = await usersService.login(userId)
+  const result = await usersService.login({ user_id: userId, verify_status: user.verify_status })
   return res.json({
     message: USER_MESSAGE.USER_LOGIN_SUCCESS,
     result
@@ -102,8 +107,11 @@ export const forgotPasswordController = async (
   req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
   res: Response
 ) => {
-  const { _id } = req.user as User
-  await usersService.forgotPassword((_id as ObjectId).toString())
+  const { _id, verify_status } = req.user as User
+  await usersService.forgotPassword({
+    user_id: (_id as ObjectId).toString(),
+    verify_status
+  })
   return res.json({
     message: USER_MESSAGE.RESET_PASSWORD_CHECK_EMAIL
   })
@@ -127,5 +135,59 @@ export const resetPasswordController = async (
   await usersService.resetPassword(user_id, password)
   return res.json({
     message: USER_MESSAGE.RESET_PASSWORD_SUCCESS
+  })
+}
+
+export const getCurrentUserInfoController = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const user = await usersService.getPublicUserInfoById(user_id)
+  return res.json({
+    message: USER_MESSAGE.USER_GET_INFO_SUCCESS,
+    result: user
+  })
+}
+
+export const updateCurrentUserInfoController = async (
+  req: Request<ParamsDictionary, any, UpdateUserInfoRequestBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const user = await usersService.updateUserInfo(user_id, req.body)
+  return res.json({ message: USER_MESSAGE.USER_UPDATE_INFO_SUCCESS, result: user })
+}
+
+// MEMO: `GetUserProfileByUsernameRequestParams` interface replaces for `ParamsDictionary` interface
+export const getUserProfileController = async (req: Request<GetUserProfileByUsernameRequestParams>, res: Response) => {
+  const { username } = req.params
+  const user = await usersService.getUserProfileByUsername(username)
+  return res.json({
+    message: USER_MESSAGE.USER_GET_INFO_SUCCESS,
+    result: user
+  })
+}
+
+export const followController = async (req: Request<ParamsDictionary, any, FollowRequestBody>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.body
+  const result = await usersService.follow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const unfollowController = async (req: Request<UnfollowRequestParams>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.params
+  const result = await usersService.unfollow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { old_password, password } = req.body
+  await usersService.changePassword(user_id, old_password, password)
+  return res.json({
+    message: USER_MESSAGE.PASSWORD_CHANGE_SUCCESS
   })
 }

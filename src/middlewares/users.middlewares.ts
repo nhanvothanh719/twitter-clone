@@ -1,11 +1,14 @@
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema, ParamSchema } from 'express-validator'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
+import { USERNAME_REGEX } from '~/constants/regex'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
@@ -99,10 +102,74 @@ const forgotPasswordTokenSchema: ParamSchema = {
   }
 }
 
+const userNameSchema: ParamSchema = {
+  notEmpty: {
+    errorMessage: USER_MESSAGE.NAME_REQUIRED
+  },
+  isString: {
+    errorMessage: USER_MESSAGE.NAME_STRING
+  },
+  trim: true,
+  isLength: {
+    options: {
+      min: 2,
+      max: 50
+    },
+    errorMessage: USER_MESSAGE.NAME_LENGTH
+  }
+}
+
+const userDateOfBirthSchema: ParamSchema = {
+  isISO8601: {
+    options: {
+      strict: true,
+      strictSeparator: true
+    },
+    errorMessage: USER_MESSAGE.DATE_OF_BIRTH_INVALID
+  }
+}
+
+const imageURLSchema: ParamSchema = {
+  optional: true,
+  isString: {
+    errorMessage: USER_MESSAGE.IMG_URL_STRING
+  },
+  trim: true,
+  isLength: {
+    options: {
+      min: 1,
+      max: 400
+    },
+    errorMessage: USER_MESSAGE.IMG_URL_LENGTH
+  }
+}
+
+const userIdSchema: ParamSchema = {
+  custom: {
+    options: async (value: string, { req }) => {
+      if (!ObjectId.isValid(value)) {
+        throw new ErrorWithStatus({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: USER_MESSAGE.USER_ID_INVALID
+        })
+      }
+      const followedUser = await databaseService.users.findOne({
+        _id: new ObjectId(value)
+      })
+      if (followedUser === null) {
+        throw new ErrorWithStatus({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: USER_MESSAGE.USER_NOT_FOUND
+        })
+      }
+      return true
+    }
+  }
+}
+
 const loginValidator = checkSchema(
   {
     email: {
-      trim: true,
       notEmpty: {
         errorMessage: USER_MESSAGE.EMAIL_REQUIRED
       },
@@ -155,22 +222,7 @@ export const validateUserLogin = validate(loginValidator)
 // MEMO: Use schema in `express-validator`
 const registerValidator = checkSchema(
   {
-    name: {
-      notEmpty: {
-        errorMessage: USER_MESSAGE.NAME_REQUIRED
-      },
-      isString: {
-        errorMessage: USER_MESSAGE.NAME_STRING
-      },
-      isLength: {
-        options: {
-          min: 2,
-          max: 50
-        },
-        errorMessage: USER_MESSAGE.NAME_LENGTH
-      },
-      trim: true
-    },
+    name: userNameSchema,
     email: {
       notEmpty: {
         errorMessage: USER_MESSAGE.EMAIL_REQUIRED
@@ -178,7 +230,6 @@ const registerValidator = checkSchema(
       isEmail: {
         errorMessage: USER_MESSAGE.EMAIL_INVALID
       },
-      trim: true,
       custom: {
         options: async (value) => {
           const isUniqueEmail = await usersService.isUniqueEmail(value)
@@ -189,15 +240,7 @@ const registerValidator = checkSchema(
     },
     password: passwordSchema,
     confirm_password: confirmPasswordSchema,
-    date_of_birth: {
-      isISO8601: {
-        options: {
-          strict: true,
-          strictSeparator: true
-        },
-        errorMessage: USER_MESSAGE.DATE_OF_BIRTH_INVALID
-      }
-    }
+    date_of_birth: userDateOfBirthSchema
   },
   ['body']
 )
@@ -327,7 +370,6 @@ export const validateEmailVerifyToken = validate(emailVerifyTokenValidator)
 const forgotPasswordValidator = checkSchema(
   {
     email: {
-      trim: true,
       notEmpty: {
         errorMessage: USER_MESSAGE.EMAIL_REQUIRED
       },
@@ -368,3 +410,142 @@ const resetPasswordValidator = checkSchema(
   ['body']
 )
 export const validateResetPassword = validate(resetPasswordValidator)
+
+// MEMO: This middleware must run after `validateAccessToken` middleware
+export const validateVerifiedUser = (req: Request, res: Response, next: NextFunction) => {
+  const { verify_status } = req.decoded_authorization as TokenPayload
+  if (verify_status !== UserVerifyStatus.Verified) {
+    // MEMO: Use `next(new Error)` to pass immediately to the error-handling middleware
+    return next(
+      new ErrorWithStatus({
+        status: HTTP_STATUS.FORBIDDEN,
+        message: USER_MESSAGE.USER_NOT_VERIFIED
+      })
+    )
+  }
+  next()
+}
+
+const updateCurrentUserInfoValidator = checkSchema(
+  {
+    name: {
+      ...userNameSchema,
+      optional: true,
+      notEmpty: undefined
+    },
+    date_of_birth: {
+      ...userDateOfBirthSchema,
+      optional: true
+    },
+    username: {
+      optional: true,
+      isString: {
+        errorMessage: USER_MESSAGE.USERNAME_STRING
+      },
+      trim: true,
+      custom: {
+        options: async (value: string, { req }) => {
+          if (!USERNAME_REGEX.test(value)) {
+            throw Error(USER_MESSAGE.USERNAME_INVALID)
+          }
+          const user = await databaseService.users.findOne({ username: value })
+          if (user) {
+            throw Error(USER_MESSAGE.USERNAME_EXIST)
+          }
+        }
+      }
+    },
+    bio: {
+      optional: true,
+      isString: {
+        errorMessage: USER_MESSAGE.BIO_STRING
+      },
+      trim: true,
+      isLength: {
+        options: {
+          min: 1,
+          max: 200
+        },
+        errorMessage: USER_MESSAGE.BIO_LENGTH
+      }
+    },
+    address: {
+      optional: true,
+      isString: {
+        errorMessage: USER_MESSAGE.ADDRESS_STRING
+      },
+      trim: true,
+      isLength: {
+        options: {
+          min: 1,
+          max: 200
+        },
+        errorMessage: USER_MESSAGE.ADDRESS_LENGTH
+      }
+    },
+    website: {
+      optional: true,
+      isString: {
+        errorMessage: USER_MESSAGE.WEBSITE_STRING
+      },
+      trim: true,
+      isLength: {
+        options: {
+          min: 1,
+          max: 200
+        },
+        errorMessage: USER_MESSAGE.WEBSITE_LENGTH
+      }
+    },
+    avatar: imageURLSchema,
+    cover_photo: imageURLSchema
+  },
+  ['body']
+)
+export const validateUpdateCurrentUserInfo = validate(updateCurrentUserInfoValidator)
+
+const followedUserValidator = checkSchema(
+  {
+    followed_user_id: userIdSchema
+  },
+  ['body']
+)
+export const validateFollowedUser = validate(followedUserValidator)
+
+const unfollowUserValidator = checkSchema(
+  {
+    followed_user_id: userIdSchema
+  },
+  ['params']
+)
+export const validateUnfollowedUser = validate(unfollowUserValidator)
+
+const changePasswordValidator = checkSchema(
+  {
+    old_password: {
+      ...passwordSchema,
+      custom: {
+        options: async (value: string, { req }) => {
+          const { user_id } = (req as Request).decoded_authorization as TokenPayload
+          const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+          if (!user) {
+            throw new ErrorWithStatus({
+              status: HTTP_STATUS.NOT_FOUND,
+              message: USER_MESSAGE.USER_NOT_FOUND
+            })
+          }
+          if (hashPassword(value) !== user.password) {
+            throw new ErrorWithStatus({
+              status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+              message: USER_MESSAGE.OLD_PASSWORD_DOES_NOT_MATCH
+            })
+          }
+        }
+      }
+    },
+    password: passwordSchema,
+    confirm_password: confirmPasswordSchema
+  },
+  ['body']
+)
+export const validateChangePassword = validate(changePasswordValidator)
