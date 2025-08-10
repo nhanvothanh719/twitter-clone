@@ -11,6 +11,7 @@ import { config } from 'dotenv'
 import { ErrorWithStatus } from '~/models/Errors'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
+import Follower from '~/models/schemas/Follower.schema'
 
 // MEMO: Load `.env` file
 config()
@@ -203,6 +204,22 @@ class UsersService {
       })
     }
     return user
+  }
+
+  async follow(userId: string, followedUserId: string) {
+    const follower = await databaseService.followers.findOne({
+      user_id: new ObjectId(userId),
+      followed_user_id: new ObjectId(followedUserId)
+    })
+    if (follower) {
+      return {
+        message: USER_MESSAGE.USER_FOLLOW_EXIST
+      }
+    }
+    await databaseService.followers.insertOne(
+      new Follower({ user_id: new ObjectId(userId), followed_user_id: new ObjectId(followedUserId) })
+    )
+    return { message: USER_MESSAGE.USER_FOLLOW_SUCCESS }
   }
 
   private signAccessToken({ user_id, verify_status }: { user_id: string; verify_status: UserVerifyStatus }) {

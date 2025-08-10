@@ -47,8 +47,12 @@ export interface UpdateUserInfoRequestBody {
   cover_photo?: string
 }
 
-export interface GetUserProfileByUsernameRequestBody {
+export interface GetUserProfileByUsernameRequestParams {
   username: string
+}
+
+export interface FollowRequestBody {
+  followed_user_id: string
 }
 
 export interface TokenPayload extends JwtPayload {

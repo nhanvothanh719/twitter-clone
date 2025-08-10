@@ -10,12 +10,14 @@ import {
   resetPasswordController,
   getCurrentUserInfoController,
   updateCurrentUserInfoController,
-  getUserProfileController
+  getUserProfileController,
+  followController
 } from '~/controllers/users.controllers'
 import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
   validateAccessToken,
   validateEmailVerifyToken,
+  validateFollowedUser,
   validateForgotPassword,
   validateForgotPasswordToken,
   validateRefreshToken,
@@ -125,8 +127,22 @@ usersRouter.patch(
 
 /**
  * Description: Get user profile
- * Path: /:username
+ * Path: /users/:username
  */
 usersRouter.get('/:username', wrapRequestHandler(getUserProfileController))
+
+/**
+ * Description: Follow one user
+ * Path: /users/follow
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: { followed_user_id: string }
+ */
+usersRouter.post(
+  '/follow',
+  validateAccessToken,
+  validateVerifiedUser,
+  validateFollowedUser,
+  wrapRequestHandler(followController)
+)
 
 export default usersRouter

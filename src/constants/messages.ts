@@ -45,5 +45,8 @@ export const USER_MESSAGE = {
   USER_NOT_FOUND: 'User not found',
   USER_NOT_VERIFIED: 'User is not verified',
   USER_GET_INFO_SUCCESS: 'Get user info successfully',
-  USER_UPDATE_INFO_SUCCESS: 'Update user info successfully'
+  USER_UPDATE_INFO_SUCCESS: 'Update user info successfully',
+  USER_FOLLOW_SUCCESS: 'You are following this user',
+  USER_FOLLOW_EXIST: 'You have already followed this user',
+  USER_ID_INVALID: 'Invalid user id'
 } as const

@@ -5,8 +5,9 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 import {
+  FollowRequestBody,
   ForgotPasswordRequestBody,
-  GetUserProfileByUsernameRequestBody,
+  GetUserProfileByUsernameRequestParams,
   ResetPasswordRequestBody,
   TokenPayload,
   UpdateUserInfoRequestBody,
@@ -153,12 +154,19 @@ export const updateCurrentUserInfoController = async (
   return res.json({ message: USER_MESSAGE.USER_UPDATE_INFO_SUCCESS, result: user })
 }
 
-// MEMO: `GetUserProfileByUsernameRequestBody` interface replaces for `ParamsDictionary` interface
-export const getUserProfileController = async (req: Request<GetUserProfileByUsernameRequestBody>, res: Response) => {
+// MEMO: `GetUserProfileByUsernameRequestParams` interface replaces for `ParamsDictionary` interface
+export const getUserProfileController = async (req: Request<GetUserProfileByUsernameRequestParams>, res: Response) => {
   const { username } = req.params
   const user = await usersService.getUserProfileByUsername(username)
   return res.json({
     message: USER_MESSAGE.USER_GET_INFO_SUCCESS,
     result: user
   })
+}
+
+export const followController = async (req: Request<ParamsDictionary, any, FollowRequestBody>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.body
+  const successMessage = await usersService.follow(user_id, followed_user_id)
+  return res.json(successMessage)
 }
