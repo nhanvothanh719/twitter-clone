@@ -5,6 +5,7 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 import {
+  ChangePasswordRequestBody,
   FollowRequestBody,
   ForgotPasswordRequestBody,
   GetUserProfileByUsernameRequestParams,
@@ -177,4 +178,16 @@ export const unfollowController = async (req: Request<UnfollowRequestParams>, re
   const { followed_user_id } = req.params
   const result = await usersService.unfollow(user_id, followed_user_id)
   return res.json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { old_password, password } = req.body
+  await usersService.changePassword(user_id, old_password, password)
+  return res.json({
+    message: USER_MESSAGE.PASSWORD_CHANGE_SUCCESS
+  })
 }

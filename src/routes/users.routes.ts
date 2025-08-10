@@ -12,11 +12,13 @@ import {
   updateCurrentUserInfoController,
   getUserProfileController,
   followController,
-  unfollowController
+  unfollowController,
+  changePasswordController
 } from '~/controllers/users.controllers'
 import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
   validateAccessToken,
+  validateChangePassword,
   validateEmailVerifyToken,
   validateFollowedUser,
   validateForgotPassword,
@@ -158,6 +160,20 @@ usersRouter.delete(
   validateVerifiedUser,
   validateUnfollowedUser,
   wrapRequestHandler(unfollowController)
+)
+
+/**
+ * Description: Change password
+ * Path: /users/change-password
+ * Header: { Authorization: Bearer <access_token> }
+ * Body: { old_password: string, password: string, confirm_password: string}
+ */
+usersRouter.put(
+  '/change-password',
+  validateAccessToken,
+  validateVerifiedUser,
+  validateChangePassword,
+  wrapRequestHandler(changePasswordController)
 )
 
 export default usersRouter

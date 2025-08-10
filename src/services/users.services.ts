@@ -147,6 +147,24 @@ class UsersService {
     )
   }
 
+  async changePassword(userId: string, oldPassword: string, password: string) {
+    if (oldPassword === password) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+        message: USER_MESSAGE.NEW_PASSWORD_SAME_AS_OLD_PASSWORD
+      })
+    }
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          password: hashPassword(password),
+          updated_at: new Date()
+        }
+      }
+    )
+  }
+
   async getPublicUserInfoById(userId: string) {
     const user = await databaseService.users.findOne(
       { _id: new ObjectId(userId) },
