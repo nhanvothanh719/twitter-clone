@@ -2,10 +2,12 @@ import express from 'express'
 import usersRouter from './routes/users.routes'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/errors.middlewares'
+import mediasRouter from './routes/medias.routes'
+import { initFolder } from './utils/file'
 const app = express()
 const port = 3000
 
-// MEMO: Same as: databaseService.checkDBConnection().catch(error => console.dir(error))
+initFolder()
 databaseService.checkDBConnection().catch(console.dir)
 
 // === Middleware setup ===
@@ -16,6 +18,7 @@ app.use(express.json())
 // === Route handler ===
 // - Any errors thrown here will be passed to the error handler bellow
 app.use('/users', usersRouter)
+app.use('/medias', mediasRouter)
 
 // === Error-handling middleware ===
 // - Catch errors from all previous routes or middlewares
