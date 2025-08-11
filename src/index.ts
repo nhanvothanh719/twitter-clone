@@ -4,8 +4,14 @@ import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/errors.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
+import { config } from 'dotenv'
+import argv from 'minimist'
+
+const passedOptions = argv(process.argv.slice(2))
+
+config()
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 initFolder()
 databaseService.checkDBConnection().catch(console.dir)

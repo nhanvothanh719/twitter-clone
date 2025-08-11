@@ -4,6 +4,7 @@ import sharp from 'sharp'
 import { UPLOAD_FOLDER_PATH } from '~/constants/paths'
 import path from 'path'
 import { config } from 'dotenv'
+import { isProduction } from '~/constants/config'
 
 config()
 
@@ -16,7 +17,8 @@ class MediasService {
     await sharp(file.filepath).jpeg().toFile(uploadPath)
     // Remove temporary image in `/uploads/temp` folder
     deleteFile(file.filepath)
-    return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${imgName}.jpg`
+    const host = isProduction ? (process.env.HOST as string) : `http://localhost:${process.env.PORT}`
+    return `${host}/uploads/${imgName}.jpg`
   }
 }
 
