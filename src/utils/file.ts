@@ -12,13 +12,16 @@ export const initFolder = () => {
   }
 }
 
-export const handleTemporarySingleImageUpload = async (req: Request) => {
-  const maxFileSize = 300 * 1024 // MEMO: Max file size is 300KB
+export const uploadTemporaryImages = async (req: Request) => {
+  const MAX_FILE_NUMBER = 4
+  const maxFileSize = 300 * 1024 // MEMO: Max size of each uploaded file is 300KB
+  const maxTotalFileSize = MAX_FILE_NUMBER * 300 * 1024
   const form = formidable({
     uploadDir: TEMP_UPLOAD_FOLDER_PATH,
-    maxFiles: 1,
+    maxFiles: MAX_FILE_NUMBER,
     keepExtensions: true,
     maxFileSize,
+    maxTotalFileSize,
     filter: function ({ name, originalFilename, mimetype }) {
       const isValidName = name === 'image' // MEMO: req.name === 'image'
       const isValidMimeType = (mimetype as string).includes('image/')
@@ -29,12 +32,12 @@ export const handleTemporarySingleImageUpload = async (req: Request) => {
       return isValid
     }
   })
-  return new Promise<File>((resolve, reject) => {
+  return new Promise<File[]>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       // MEMO: If error occurs
       if (err) return reject(err)
       // MEMO: If successfully upload
-      resolve((files.image as File[])[0])
+      resolve(files.image as File[])
     })
   })
 }
