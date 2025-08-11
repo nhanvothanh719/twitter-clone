@@ -29,6 +29,7 @@ export const USER_MESSAGE = {
   USERNAME_EXIST: 'Username is using',
   IMG_URL_STRING: 'Image URL must be a string',
   IMG_URL_LENGTH: 'Image URL must be between 1 and 400 characters',
+  IMG_UPLOAD_SUCCESS: 'Upload image successfully',
   USER_LOGIN_SUCCESS: 'Login successfully',
   USER_REGISTER_SUCCESS: 'Register new user successfully',
   USER_LOGOUT_SUCCESS: 'Logout successfully',

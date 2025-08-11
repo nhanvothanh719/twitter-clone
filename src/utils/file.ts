@@ -1,22 +1,21 @@
 import { Request } from 'express'
-import formidable from 'formidable'
+import formidable, { File } from 'formidable'
 import fs from 'fs'
-import path from 'path'
-import { UPLOAD_FOLDER_PATH } from '~/constants/paths'
+import { TEMP_UPLOAD_FOLDER_PATH, UPLOAD_FOLDER_PATH } from '~/constants/paths'
 
 export const initFolder = () => {
-  if (!fs.existsSync(UPLOAD_FOLDER_PATH)) {
-    console.log('--- `/uploads` folder cannot be found. Start to create it... ---')
+  if (!fs.existsSync(TEMP_UPLOAD_FOLDER_PATH)) {
+    console.log('--- Folder for storing uploaded files cannot be found. Start to create it... ---')
     // MEMO: Allow to create nested folder (ex: /uploads/imgs, ...)
-    fs.mkdirSync(UPLOAD_FOLDER_PATH, { recursive: true })
-    console.log('--- Create `/uploads` folder successfully ---')
+    fs.mkdirSync(TEMP_UPLOAD_FOLDER_PATH, { recursive: true })
+    console.log('--- Create this folder successfully ---')
   }
 }
 
-export const handleSingleImgUpload = async (req: Request) => {
+export const handleTemporarySingleImageUpload = async (req: Request) => {
   const maxFileSize = 300 * 1024 // MEMO: Max file size is 300KB
   const form = formidable({
-    uploadDir: UPLOAD_FOLDER_PATH,
+    uploadDir: TEMP_UPLOAD_FOLDER_PATH,
     maxFiles: 1,
     keepExtensions: true,
     maxFileSize,
@@ -30,12 +29,23 @@ export const handleSingleImgUpload = async (req: Request) => {
       return isValid
     }
   })
-  return new Promise((resolve, reject) => {
+  return new Promise<File>((resolve, reject) => {
     form.parse(req, (err, fields, files) => {
       // MEMO: If error occurs
       if (err) return reject(err)
       // MEMO: If successfully upload
-      resolve(files)
+      resolve((files.image as File[])[0])
     })
   })
+}
+
+export const getNameFromFullName = (fullName: string) => {
+  const splittedFullname = fullName.split('.')
+  // MEMO: Remove media file type (png, ...)
+  splittedFullname.pop()
+  return splittedFullname.join('')
+}
+
+export const deleteFile = (filePath: string) => {
+  fs.unlinkSync(filePath)
 }

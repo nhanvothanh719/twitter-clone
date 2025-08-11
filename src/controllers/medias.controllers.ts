@@ -1,12 +1,11 @@
 import { Request, Response } from 'express'
-import formidable from 'formidable'
-import path, { dirname } from 'path'
-import { UPLOAD_FOLDER_PATH } from '~/constants/paths'
-import { handleSingleImgUpload } from '~/utils/file'
+import { USER_MESSAGE } from '~/constants/messages'
+import mediasService from '~/services/medias.services'
 
 export const uploadSingleImgController = async (req: Request, res: Response) => {
-  const result = await handleSingleImgUpload(req)
+  const result = await mediasService.handleUploadSingleImage(req)
   return res.json({
+    message: USER_MESSAGE.IMG_UPLOAD_SUCCESS,
     result
   })
 }
