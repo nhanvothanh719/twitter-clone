@@ -12,6 +12,8 @@ import { ErrorWithStatus } from '~/models/Errors'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
 import { USER_MESSAGE } from '~/constants/messages'
 import Follower from '~/models/schemas/Follower.schema'
+import axios from 'axios'
+import qs from 'qs'
 
 // MEMO: Load `.env` file
 config()
@@ -58,6 +60,43 @@ class UsersService {
       new RefreshToken({ token: refreshToken, user_id: new ObjectId(user_id) })
     )
     return { access_token: accessToken, refresh_token: refreshToken }
+  }
+
+  async oauthLogin(code: string) {
+    const { access_token, id_token } = await this.getOauthGoogleToken(code)
+    const googleUserInfo = await this.getGoogleUserInfo(access_token, id_token)
+    if (googleUserInfo.verified_email === false) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: USER_MESSAGE.GMAIL_UNVERIFIED
+      })
+    }
+    // Check registered email
+    const user = await databaseService.users.findOne({ email: googleUserInfo.email })
+    if (user) {
+      const [accessToken, refreshToken] = await this.signAccessAndRefreshToken({
+        user_id: user._id.toString(),
+        verify_status: user.verify_status
+      })
+      await databaseService.refreshTokens.insertOne(new RefreshToken({ token: refreshToken, user_id: user._id }))
+      return {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        is_new_user: false,
+        verify_status: user.verify_status
+      }
+    } else {
+      const randomPassword = Math.random().toString(36).substring(2, 7)
+      const dateOfBirthISOString = new Date().toISOString()
+      const result = await this.register({
+        email: googleUserInfo.email,
+        name: googleUserInfo.name,
+        date_of_birth: dateOfBirthISOString,
+        password: randomPassword,
+        confirm_password: randomPassword
+      })
+      return { ...result, is_new_user: true, verify_status: UserVerifyStatus.Unverified }
+    }
   }
 
   async logout(refreshToken: string) {
@@ -318,6 +357,44 @@ class UsersService {
         expiresIn: (process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as StringValue) || '100d'
       }
     })
+  }
+
+  private async getOauthGoogleToken(code: string) {
+    const GOOGLE_OAUTH_TOKEN_URL = 'https://oauth2.googleapis.com/token'
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      grant_type: 'authorization_code'
+    }
+    // MEMO: Convert body from `object` to `x-www-form-urlencoded string`
+    const response = await axios.post(GOOGLE_OAUTH_TOKEN_URL, qs.stringify(body), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    return response.data as { access_token: string; id_token: string }
+  }
+
+  private async getGoogleUserInfo(accessToken: string, idToken: string) {
+    const GOOGLE_OAUTH_USER_INFO_URL = 'https://openidconnect.googleapis.com/v1/userinfo'
+    const { data } = await axios.get(GOOGLE_OAUTH_USER_INFO_URL, {
+      params: { access_token: accessToken, alt: 'json' },
+      headers: {
+        Authorization: `Bearer ${idToken}`
+      }
+    })
+    return data as {
+      id: string
+      email: string
+      verified_email: boolean
+      name: string
+      given_name: string
+      family_name: string
+      picture: string
+      locale: string
+    }
   }
 }
 

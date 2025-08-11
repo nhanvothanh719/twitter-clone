@@ -1,3 +1,4 @@
+import { config } from 'dotenv'
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
@@ -22,6 +23,8 @@ import {
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
+
+config()
 
 export const loginController = async (req: Request<ParamsDictionary, any, UserLoginRequestBody>, res: Response) => {
   // MEMO: Get `user` field from request which was assigned in `loginValidator`
@@ -190,4 +193,11 @@ export const changePasswordController = async (
   return res.json({
     message: USER_MESSAGE.PASSWORD_CHANGE_SUCCESS
   })
+}
+
+export const googleOauthController = async (req: Request, res: Response) => {
+  const { code } = req.query
+  const { access_token, refresh_token, is_new_user, verify_status } = await usersService.oauthLogin(code as string)
+  const redirectURL = `${process.env.CLIENT_REDIRECT_CALLBACK_URI}?access_token=${access_token}&refresh_token=${refresh_token}&is_new_user=${is_new_user}&verify_status=${verify_status}`
+  return res.redirect(redirectURL)
 }
