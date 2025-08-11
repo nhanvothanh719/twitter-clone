@@ -1,8 +1,7 @@
 import { Request } from 'express'
-import { deleteFile, getNameFromFullName, uploadTemporaryImages } from '~/utils/file'
+import { deleteFile, getNameFromFullName, uploadTemporaryImages, uploadVideoHandler } from '~/utils/file'
 import sharp from 'sharp'
-import { UPLOAD_FOLDER_PATH } from '~/constants/paths'
-import path from 'path'
+import { UPLOAD_IMG_FOLDER_PATH } from '~/constants/paths'
 import { config } from 'dotenv'
 import { isProduction } from '~/constants/config'
 import { MediaType } from '~/constants/enums'
@@ -16,10 +15,10 @@ class MediasService {
     const result: Media[] = await Promise.all(
       files.map(async (file) => {
         const imgName = getNameFromFullName(file.newFilename)
-        const uploadPath = `${UPLOAD_FOLDER_PATH}/${imgName}.jpg`
-        // Save new `.jpeg` image in `/uploads` folder after modification
+        const uploadPath = `${UPLOAD_IMG_FOLDER_PATH}/${imgName}.jpg`
+        // Save new `.jpeg` image in `/uploads/images` folder after modification
         await sharp(file.filepath).jpeg().toFile(uploadPath)
-        // Remove temporary image in `/uploads/temp` folder
+        // Remove temporary image in `/uploads/images/temp` folder
         deleteFile(file.filepath)
         const host = isProduction ? (process.env.HOST as string) : `http://localhost:${process.env.PORT}`
         return {
@@ -29,6 +28,16 @@ class MediasService {
       })
     )
     return result
+  }
+
+  async uploadVideo(req: Request) {
+    const file = await uploadVideoHandler(req)
+    const { newFilename } = file
+    const host = isProduction ? (process.env.HOST as string) : `http://localhost:${process.env.PORT}`
+    return {
+      url: `${host}/assets/videos/${newFilename}`,
+      type: MediaType.Video
+    }
   }
 }
 

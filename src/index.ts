@@ -5,7 +5,7 @@ import { defaultErrorHandler } from './middlewares/errors.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
-import { UPLOAD_FOLDER_PATH } from './constants/paths'
+import { UPLOAD_IMG_FOLDER_PATH } from './constants/paths'
 import assetsRouter from './routes/assets.routes'
 
 config()
@@ -13,8 +13,8 @@ const app = express()
 const port = process.env.PORT || 3000
 
 initFolder()
-// MEMO: Enable this: View uploaded file at: `/uploaded-assets/file-name.jpg`
-// app.use('/assets', express.static(UPLOAD_FOLDER_PATH))
+// MEMO: Enable this: View uploaded file at: `/assets/file-name.jpg`
+// app.use('/assets', express.static(UPLOAD_IMG_FOLDER_PATH))
 databaseService.checkDBConnection().catch(console.dir)
 
 // === Middleware setup ===

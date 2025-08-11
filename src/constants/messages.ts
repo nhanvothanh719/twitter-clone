@@ -31,6 +31,8 @@ export const USER_MESSAGE = {
   IMG_URL_LENGTH: 'Image URL must be between 1 and 400 characters',
   IMG_UPLOAD_SUCCESS: 'Upload image(s) successfully',
   IMG_NOT_FOUND: 'Image is not found',
+  VIDEO_UPLOAD_SUCCESS: 'Upload video successfully',
+  VIDEO_NOT_FOUND: 'Video is not found',
   USER_LOGIN_SUCCESS: 'Login successfully',
   USER_REGISTER_SUCCESS: 'Register new user successfully',
   USER_LOGOUT_SUCCESS: 'Logout successfully',
@@ -57,5 +59,6 @@ export const USER_MESSAGE = {
   USER_FOLLOW_EXIST: 'You have already followed this user',
   USER_FOLLOW_NOT_EXIST: 'You have not followed this user yet',
   USER_UNFOLLOW_SUCCESS: 'Unfollow this user successfully',
-  GMAIL_UNVERIFIED: 'Gmail has not been verified'
+  GMAIL_UNVERIFIED: 'Gmail has not been verified',
+  UPLOADED_FILE_TYPE_INVALID: 'Invalid uploaded file type'
 } as const
