@@ -12,7 +12,7 @@ class MediasService {
   async handleUploadSingleImage(req: Request) {
     const file = await handleTemporarySingleImageUpload(req)
     const imgName = getNameFromFullName(file.newFilename)
-    const uploadPath = path.resolve(UPLOAD_FOLDER_PATH, `/${imgName}.jpg`)
+    const uploadPath = `${UPLOAD_FOLDER_PATH}/${imgName}.jpg`
     // Save new image in `/uploads` folder after modification
     await sharp(file.filepath).jpeg().toFile(uploadPath)
     // Remove temporary image in `/uploads/temp` folder
