@@ -13,7 +13,8 @@ import {
   getUserProfileController,
   followController,
   unfollowController,
-  changePasswordController
+  changePasswordController,
+  googleOauthController
 } from '~/controllers/users.controllers'
 import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
@@ -175,5 +176,12 @@ usersRouter.put(
   validateChangePassword,
   wrapRequestHandler(changePasswordController)
 )
+
+/**
+ * Description: OAuth with Google
+ * Path: /users/oauth/google
+ * Query: { code: string }
+ */
+usersRouter.get('/oauth/google', wrapRequestHandler(googleOauthController))
 
 export default usersRouter
