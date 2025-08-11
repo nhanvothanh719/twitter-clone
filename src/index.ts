@@ -6,14 +6,15 @@ import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import argv from 'minimist'
-
-const passedOptions = argv(process.argv.slice(2))
+import { UPLOAD_FOLDER_PATH } from './constants/paths'
 
 config()
 const app = express()
 const port = process.env.PORT || 3000
 
 initFolder()
+// MEMO: View uploaded file at: `http://localhost:3000/uploaded-assets/file-name.jpg`
+app.use('/assets', express.static(UPLOAD_FOLDER_PATH))
 databaseService.checkDBConnection().catch(console.dir)
 
 // === Middleware setup ===

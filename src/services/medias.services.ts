@@ -18,7 +18,7 @@ class MediasService {
     // Remove temporary image in `/uploads/temp` folder
     deleteFile(file.filepath)
     const host = isProduction ? (process.env.HOST as string) : `http://localhost:${process.env.PORT}`
-    return `${host}/uploads/${imgName}.jpg`
+    return `${host}/assets/${imgName}.jpg`
   }
 }
 
