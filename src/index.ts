@@ -5,16 +5,16 @@ import { defaultErrorHandler } from './middlewares/errors.middlewares'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import { config } from 'dotenv'
-import argv from 'minimist'
 import { UPLOAD_FOLDER_PATH } from './constants/paths'
+import assetsRouter from './routes/assets.routes'
 
 config()
 const app = express()
 const port = process.env.PORT || 3000
 
 initFolder()
-// MEMO: View uploaded file at: `http://localhost:3000/uploaded-assets/file-name.jpg`
-app.use('/assets', express.static(UPLOAD_FOLDER_PATH))
+// MEMO: Enable this: View uploaded file at: `/uploaded-assets/file-name.jpg`
+// app.use('/assets', express.static(UPLOAD_FOLDER_PATH))
 databaseService.checkDBConnection().catch(console.dir)
 
 // === Middleware setup ===
@@ -24,6 +24,7 @@ app.use(express.json())
 
 // === Route handler ===
 // - Any errors thrown here will be passed to the error handler bellow
+app.use('/assets', assetsRouter)
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 
