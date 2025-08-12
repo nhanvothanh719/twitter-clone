@@ -104,6 +104,28 @@ class UsersService {
     return result
   }
 
+  async refreshToken({
+    user_id,
+    verify_status,
+    refresh_token,
+    exp
+  }: {
+    user_id: string
+    verify_status: UserVerifyStatus
+    refresh_token: string
+    exp: number
+  }) {
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      this.signAccessToken({ user_id, verify_status }),
+      this.signRefreshToken({ user_id, verify_status, exp }),
+      databaseService.refreshTokens.deleteOne({ token: refresh_token })
+    ])
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ token: newRefreshToken, user_id: new ObjectId(user_id) })
+    )
+    return { access_token: newAccessToken, refresh_token: newRefreshToken }
+  }
+
   async verifyEmail(userId: string) {
     // Get access token + refresh token & Mark as verified user
     const [[accessToken, refreshToken], _] = await Promise.all([
@@ -310,7 +332,26 @@ class UsersService {
     })
   }
 
-  private signRefreshToken = ({ user_id, verify_status }: { user_id: string; verify_status: UserVerifyStatus }) => {
+  private signRefreshToken = ({
+    user_id,
+    verify_status,
+    exp
+  }: {
+    user_id: string
+    verify_status: UserVerifyStatus
+    exp?: number
+  }) => {
+    if (exp) {
+      return signToken({
+        payload: {
+          user_id,
+          verify_status,
+          token_type: TokenType.RefreshToken,
+          exp
+        },
+        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      })
+    }
     return signToken({
       payload: {
         user_id,

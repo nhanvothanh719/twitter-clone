@@ -40,6 +40,7 @@ export const USER_MESSAGE = {
   REFRESH_TOKEN_REQUIRED: 'Missing refresh token',
   REFRESH_TOKEN_INVALID: 'Invalid refresh token',
   REFRESH_TOKEN_NOT_EXIST: 'Refresh token does not exist',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token successfully',
   EMAIL_VERIFY_TOKEN_REQUIRED: 'Missing email verify token',
   EMAIL_ALREADY_VERIFIED: 'Email has already been verified',
   EMAIL_VERIFY_SUCCESS: 'Verify email successfully',
