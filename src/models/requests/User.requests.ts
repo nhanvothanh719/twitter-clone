@@ -75,4 +75,5 @@ export interface TokenPayload extends JwtPayload {
   verify_status: UserVerifyStatus
   token_type: TokenType
   exp: number
+  iat: number
 }
