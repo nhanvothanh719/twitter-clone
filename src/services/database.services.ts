@@ -49,6 +49,14 @@ class DatabaseService {
     this.users.createIndex({ email: 1 }, { unique: true })
     this.users.createIndex({ username: 1 }, { unique: true })
   }
+
+  addIndexToRefreshTokensCollection() {
+    this.refreshTokens.createIndex({ token: 1 })
+    // MEMO: Create Time-To-Live (TTL) index
+    // MEMO: MongoDB will delete document automatically when the value of `exp` field <= current time
+    // MEMO: expireAfterSeconds: 0 means deletion occurs as soon as `exp` is reached (±60s delay due to TTL monitor)
+    this.refreshTokens.createIndex({ exp: 1 }, { expireAfterSeconds: 0 })
+  }
 }
 
 const databaseService = new DatabaseService()
