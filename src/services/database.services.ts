@@ -41,6 +41,14 @@ class DatabaseService {
       throw error
     }
   }
+
+  addIndexToUsersCollection() {
+    // Create compound index (email_1_password_1) on `email` and `password` fields in ascending order
+    this.users.createIndex({ email: 1, password: 1 })
+    // Create single index on the `email` and `username` field in ascending order with unique constraint
+    this.users.createIndex({ email: 1 }, { unique: true })
+    this.users.createIndex({ username: 1 }, { unique: true })
+  }
 }
 
 const databaseService = new DatabaseService()

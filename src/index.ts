@@ -16,7 +16,10 @@ initFolder()
 // MEMO: Enable this: View uploaded file at: `/assets/file-name.jpg`
 // app.use('/assets', express.static(UPLOAD_IMG_FOLDER_PATH))
 app.use('/assets-videos', express.static(UPLOAD_VIDEO_FOLDER_PATH))
-databaseService.checkDBConnection().catch(console.dir)
+databaseService
+  .checkDBConnection()
+  .then(() => databaseService.addIndexToUsersCollection())
+  .catch(console.dir)
 
 // === Middleware setup ===
 // - Must be registered before any route handlers
