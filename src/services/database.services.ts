@@ -57,6 +57,11 @@ class DatabaseService {
     // MEMO: expireAfterSeconds: 0 means deletion occurs as soon as `exp` is reached (±60s delay due to TTL monitor)
     this.refreshTokens.createIndex({ exp: 1 }, { expireAfterSeconds: 0 })
   }
+
+  addIndexToFollowersCollection() {
+    // MEMO: Create compound index
+    this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+  }
 }
 
 const databaseService = new DatabaseService()

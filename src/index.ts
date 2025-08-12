@@ -20,6 +20,7 @@ databaseService
   .then(() => {
     databaseService.addIndexToUsersCollection()
     databaseService.addIndexToRefreshTokensCollection()
+    databaseService.addIndexToFollowersCollection()
   })
   .catch(console.dir)
 
