@@ -14,7 +14,8 @@ import {
   followController,
   unfollowController,
   changePasswordController,
-  googleOauthController
+  googleOauthController,
+  refreshTokenController
 } from '~/controllers/users.controllers'
 import { fieldsFilter } from '~/middlewares/common.middleware'
 import {
@@ -58,6 +59,13 @@ usersRouter.post('/register', validateUserRegistration, wrapRequestHandler(regis
  * Body: { refresh_token: string }
  */
 usersRouter.post('/logout', validateAccessToken, validateRefreshToken, wrapRequestHandler(logoutController))
+
+/**
+ * Description: Refresh access token when it is expired
+ * Path: /users/refresh-token
+ * Body: { refresh_token: string }
+ */
+usersRouter.post('/refresh-token', validateRefreshToken, wrapRequestHandler(refreshTokenController))
 
 /**
  * Description: Verify user's email
