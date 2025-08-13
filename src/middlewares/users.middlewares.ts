@@ -549,3 +549,16 @@ const changePasswordValidator = checkSchema(
   ['body']
 )
 export const validateChangePassword = validate(changePasswordValidator)
+
+// MEMO: --- Higher-order middleware ---
+// MEMO: Wrap a middleware with `runIfLoggedIn()` to make it execute only when the `Authorization` header is present.
+export const runIfLoggedIn = (middleware: (req: Request, res: Response, next: NextFunction) => void) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    // If user logged in => Call the provided middleware
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+    // If not => Skip to the next middleware in the chain
+    next()
+  }
+}
