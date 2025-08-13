@@ -65,6 +65,8 @@ export const USER_MESSAGE = {
 } as const
 
 export const TWEET_MESSAGE = {
+  ID_INVALID: 'Invalid tweet id',
+  TWEET_NOT_FOUND: 'Tweet not found',
   TYPE_INVALID: 'Type of this tweet is not valid',
   AUDIENCE_INVALID: 'Audience of this tweet is not valid',
   PARENT_ID_INVALID: 'Parent ID must be a valid tweet id',
@@ -75,5 +77,7 @@ export const TWEET_MESSAGE = {
   HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string items',
   MENTIONS_CONTAIN_INVALID_USER_ID: 'Mentions contain invalid user id',
   MEDIAS_INVALID: 'Medias must be an array of Media objects',
-  CREATE_SUCCESS: 'Create tweet successfully'
+  CREATE_SUCCESS: 'Create tweet successfully',
+  BOOKMARK_SUCCESS: 'Bookmark tweet successfully',
+  REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully'
 } as const

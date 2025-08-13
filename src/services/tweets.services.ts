@@ -2,7 +2,7 @@ import { TweetRequestBody } from '~/models/requests/Tweet.requests'
 import databaseService from './database.services'
 import Tweet from '~/models/schemas/Tweet.schema'
 import { ObjectId, WithId } from 'mongodb'
-import { Hashtag } from '~/models/schemas/Hashtag.schema'
+import Hashtag from '~/models/schemas/Hashtag.schema'
 
 class TweetsService {
   async createTweet(payload: TweetRequestBody, userId: string) {
