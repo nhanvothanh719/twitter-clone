@@ -20,12 +20,6 @@ class TweetsService {
     const tweet = await databaseService.tweets.findOne({ _id: result.insertedId })
     return tweet
   }
-
-  async checkAndCreateHashtag(hashtags: string[]) {
-    hashtags.map((item: string) => {
-      return databaseService.
-    })
-  }
 }
 
 const tweetsService = new TweetsService()
