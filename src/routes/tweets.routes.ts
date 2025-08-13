@@ -8,8 +8,8 @@ const tweetsRouter = Router()
 
 /**
  * Description: Create tweet
- * Path: /
- * Header:
+ * Path: /tweets/
+ * Header: { Authorization: Bearer <access_token> }
  * Body: TweetRequestBody
  */
 tweetsRouter.post(

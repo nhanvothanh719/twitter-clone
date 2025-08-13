@@ -70,7 +70,7 @@ export const TWEET_MESSAGE = {
   PARENT_ID_INVALID: 'Parent ID must be a valid tweet id',
   PARENT_ID_MUST_BE_NULL: 'Parent ID must be null',
   CONTENT_MUST_BE_STRING: 'Content must be a string',
-  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Content must be a non-empty string (',
+  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Content must be a non-empty string',
   CONTENT_MUST_BE_AN_EMPTY_STRING: 'Content must be an empty string',
   HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string items',
   MENTIONS_CONTAIN_INVALID_USER_ID: 'Mentions contain invalid user id',
