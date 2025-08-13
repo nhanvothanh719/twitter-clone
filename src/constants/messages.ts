@@ -63,3 +63,17 @@ export const USER_MESSAGE = {
   GMAIL_UNVERIFIED: 'Gmail has not been verified',
   UPLOADED_FILE_TYPE_INVALID: 'Invalid uploaded file type'
 } as const
+
+export const TWEET_MESSAGE = {
+  TYPE_INVALID: 'Type of this tweet is not valid',
+  AUDIENCE_INVALID: 'Audience of this tweet is not valid',
+  PARENT_ID_INVALID: 'Parent ID must be a valid tweet id',
+  PARENT_ID_MUST_BE_NULL: 'Parent ID must be null',
+  CONTENT_MUST_BE_STRING: 'Content must be a string',
+  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Content must be a non-empty string (',
+  CONTENT_MUST_BE_AN_EMPTY_STRING: 'Content must be an empty string',
+  HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string items',
+  MENTIONS_CONTAIN_INVALID_USER_ID: 'Mentions contain invalid user id',
+  MEDIAS_INVALID: 'Medias must be an array of Media objects',
+  CREATE_SUCCESS: 'Create tweet successfully'
+} as const

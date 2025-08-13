@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-interface IFollower {
+interface FollowerPayload {
   _id?: ObjectId
   user_id: ObjectId
   followed_user_id: ObjectId
@@ -13,7 +13,7 @@ export default class Follower {
   followed_user_id: ObjectId
   created_at: Date
 
-  constructor({ user_id, followed_user_id, created_at }: IFollower) {
+  constructor({ user_id, followed_user_id, created_at }: FollowerPayload) {
     this.user_id = user_id
     this.followed_user_id = followed_user_id
     this.created_at = created_at || new Date()
