@@ -18,7 +18,7 @@ export const bookmarkTweetController = async (
   })
 }
 
-export const removeBookmarkController = async (req: Request, res: Response) => {
+export const removeBookmarkController = async (req: Request<RemoveBookmarkTweetRequestParams>, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const { tweet_id } = req.params
   const result = await bookmarksService.removeBookmarkTweet({ user_id, tweet_id })
