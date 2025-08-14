@@ -1,6 +1,11 @@
 import { Router } from 'express'
-import { createTweetController, getTweetController } from '~/controllers/tweets.controllers'
-import { checkTweetAudienceType, validateCreateTweet, validateTweetId } from '~/middlewares/tweets.middlewares'
+import { createTweetController, getChildTweetsController, getTweetController } from '~/controllers/tweets.controllers'
+import {
+  checkTweetAudienceType,
+  validateCreateTweet,
+  validateGetChildTweets,
+  validateTweetId
+} from '~/middlewares/tweets.middlewares'
 import { runIfLoggedIn, validateAccessToken, validateVerifiedUser } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -32,5 +37,21 @@ tweetsRouter.get(
   runIfLoggedIn(validateVerifiedUser),
   checkTweetAudienceType,
   wrapRequestHandler(getTweetController)
+)
+
+/**
+ * Description: Get comments, retweets, quote-tweets of a tweet
+ * Path: /tweets/:tweet_id/children
+ * Header: { Authorization?: Bearer <access_token> }
+ * Query: { limit?: number, page?: number, tweet_type: TweetType }
+ */
+tweetsRouter.get(
+  '/:tweet_id/children',
+  validateTweetId,
+  validateGetChildTweets,
+  runIfLoggedIn(validateAccessToken),
+  runIfLoggedIn(validateVerifiedUser),
+  checkTweetAudienceType,
+  wrapRequestHandler(getChildTweetsController)
 )
 export default tweetsRouter

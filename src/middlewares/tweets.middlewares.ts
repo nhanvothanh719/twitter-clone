@@ -292,3 +292,40 @@ export const checkTweetAudienceType = wrapRequestHandler(async (req: Request, re
   }
   next()
 })
+
+const getChildTweetsValidator = checkSchema(
+  {
+    tweet_type: {
+      isIn: {
+        options: [tweetTypeIds],
+        errorMessage: TWEET_MESSAGE.TYPE_INVALID
+      }
+    },
+    limit: {
+      isNumeric: true,
+      custom: {
+        options: (value) => {
+          const limitValue = Number(value)
+          if (limitValue < 1 || limitValue > 100) {
+            throw new Error(TWEET_MESSAGE.LIMIT_INVALID)
+          }
+          return true
+        }
+      }
+    },
+    page: {
+      isNumeric: true,
+      custom: {
+        options: (value) => {
+          const pageValue = Number(value)
+          if (pageValue < 1) {
+            throw new Error(TWEET_MESSAGE.PAGE_INVALID)
+          }
+          return true
+        }
+      }
+    }
+  },
+  ['query']
+)
+export const validateGetChildTweets = validate(getChildTweetsValidator)

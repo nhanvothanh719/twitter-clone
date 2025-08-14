@@ -82,5 +82,8 @@ export const TWEET_MESSAGE = {
   BOOKMARK_SUCCESS: 'Bookmark tweet successfully',
   REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully',
   USER_FORBIDDEN: 'User is not allowed to view this tweet',
-  GET_SUCCESS: 'Get tweet successfully'
+  GET_SUCCESS: 'Get tweet successfully',
+  GET_CHILDREN_SUCCESS: 'Get tweet children successfully',
+  LIMIT_INVALID: 'Limit must be greater than 0 and less than 100',
+  PAGE_INVALID: 'Page must be greater than 0'
 } as const
