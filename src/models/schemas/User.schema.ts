@@ -11,6 +11,7 @@ interface IUser {
   email_verify_token?: string
   forgot_password_token?: string
   verify_status?: UserVerifyStatus
+  twitter_circle?: ObjectId[]
   bio?: string
   address?: string
   website?: string
@@ -30,6 +31,7 @@ export default class User {
   email_verify_token: string
   forgot_password_token: string
   verify_status: UserVerifyStatus
+  twitter_circle: ObjectId[] // Limited users (max: 150 people) that current user chose to share tweet
   bio: string
   address: string
   website: string
@@ -48,6 +50,7 @@ export default class User {
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
     this.verify_status = user.verify_status || UserVerifyStatus.Unverified
+    this.twitter_circle = user.twitter_circle || []
     this.bio = user.bio || ''
     this.address = user.address || ''
     this.website = user.website || ''
