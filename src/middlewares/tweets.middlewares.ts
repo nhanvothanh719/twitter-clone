@@ -1,12 +1,16 @@
-import { checkSchema, ParamSchema } from 'express-validator'
+import { NextFunction, Request, Response } from 'express'
+import { checkSchema } from 'express-validator'
 import _ from 'lodash'
 import { ObjectId } from 'mongodb'
-import { MediaType, TweetAudience, TweetType } from '~/constants/enums'
+import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatuses'
-import { TWEET_MESSAGE } from '~/constants/messages'
+import { TWEET_MESSAGE, USER_MESSAGE } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
+import { TokenPayload } from '~/models/requests/User.requests'
+import Tweet from '~/models/schemas/Tweet.schema'
 import databaseService from '~/services/database.services'
 import { enumToNumbersArray } from '~/utils/common'
+import { wrapRequestHandler } from '~/utils/handlers'
 import {
   isNormalTweetType,
   isRetweetOrQuoteTweetOrCommentType,
@@ -129,6 +133,7 @@ const tweetIdValidator = checkSchema(
               message: TWEET_MESSAGE.TWEET_NOT_FOUND
             })
           }
+          req.tweet = tweet
           return true
         }
       }
@@ -137,3 +142,38 @@ const tweetIdValidator = checkSchema(
   ['params', 'body']
 )
 export const validateTweetId = validate(tweetIdValidator)
+
+// MEMO: This middleware must be called after validateAccessToken and tweetIdValidator
+// MEMO: Since this is an async handler => it must contain try-catch or wrapped by `wrapRequestHandler`
+export const checkTweetAudienceType = wrapRequestHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const tweet = req.tweet as Tweet
+  if (tweet.audience !== TweetAudience.TwitterCircle) return next()
+  // Check if user viewing the tweet has logged in
+  if (!req.decoded_authorization) {
+    throw new ErrorWithStatus({
+      status: HTTP_STATUS.UNAUTHORIZED,
+      message: USER_MESSAGE.USER_UNAUTHORIZED
+    })
+  }
+  // Check if tweet's owner is banned or deleted
+  const tweetAuthor = await databaseService.users.findOne({
+    _id: new ObjectId(tweet.user_id)
+  })
+  if (!tweetAuthor || tweetAuthor.verify_status === UserVerifyStatus.Banned) {
+    throw new ErrorWithStatus({
+      status: HTTP_STATUS.NOT_FOUND,
+      message: USER_MESSAGE.USER_NOT_FOUND
+    })
+  }
+  // Check if the viewer is included in owner's twitter_circle or tweet's author
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const isIncludedInTwitterCircle = tweetAuthor.twitter_circle.some((userId) => userId.equals(user_id))
+  const isTweetOwner = tweetAuthor._id.equals(user_id)
+  if (!isTweetOwner && !isIncludedInTwitterCircle) {
+    throw new ErrorWithStatus({
+      status: HTTP_STATUS.FORBIDDEN,
+      message: TWEET_MESSAGE.USER_FORBIDDEN
+    })
+  }
+  next()
+})

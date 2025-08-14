@@ -8,3 +8,6 @@
 - `hashtags: string[]`
 - `mentions: ObjectId[]`
 - `medias: Medias[]`
+
+- Nếu `audience` của tweet là `Everyone` thì user chưa login cũng có thể xem được tweet.
+- Nếu `audience` của tweet là `TwitterCircle` thì chỉ những user nằm trong `user.twitter_circle` mới có thể xem được => Phải đăng nhập

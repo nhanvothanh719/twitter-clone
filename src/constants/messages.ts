@@ -61,7 +61,8 @@ export const USER_MESSAGE = {
   USER_FOLLOW_NOT_EXIST: 'You have not followed this user yet',
   USER_UNFOLLOW_SUCCESS: 'Unfollow this user successfully',
   GMAIL_UNVERIFIED: 'Gmail has not been verified',
-  UPLOADED_FILE_TYPE_INVALID: 'Invalid uploaded file type'
+  UPLOADED_FILE_TYPE_INVALID: 'Invalid uploaded file type',
+  USER_UNAUTHORIZED: 'User is not authorized'
 } as const
 
 export const TWEET_MESSAGE = {
@@ -79,5 +80,6 @@ export const TWEET_MESSAGE = {
   MEDIAS_INVALID: 'Medias must be an array of Media objects',
   CREATE_SUCCESS: 'Create tweet successfully',
   BOOKMARK_SUCCESS: 'Bookmark tweet successfully',
-  REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully'
+  REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully',
+  USER_FORBIDDEN: 'User is not allowed to view this tweet'
 } as const
