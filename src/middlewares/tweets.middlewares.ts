@@ -126,7 +126,122 @@ const tweetIdValidator = checkSchema(
               message: TWEET_MESSAGE.ID_INVALID
             })
           }
-          const tweet = await databaseService.tweets.findOne({ _id: new ObjectId(value) })
+          // MEMO: Use destructuring to get the first item in the array
+          const [tweet] = await databaseService.tweets
+            .aggregate<Tweet>([
+              {
+                $match: {
+                  _id: new ObjectId(value)
+                }
+              },
+              {
+                $lookup: {
+                  from: process.env.DB_HASHTAGS_COLLECTION,
+                  localField: 'hashtags',
+                  foreignField: '_id',
+                  as: 'hashtags'
+                }
+              },
+              {
+                $lookup: {
+                  from: process.env.DB_USERS_COLLECTION,
+                  localField: 'mentions',
+                  foreignField: '_id',
+                  as: 'mentions'
+                }
+              },
+              {
+                $addFields: {
+                  mentions: {
+                    $map: {
+                      input: '$mentions',
+                      as: 'mention',
+                      in: {
+                        _id: '$$mention._id',
+                        name: '$$mention.name',
+                        username: '$$mention.username',
+                        email: '$$mention.email'
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                $lookup: {
+                  from: process.env.DB_BOOKMARKS_COLLECTION,
+                  localField: '_id',
+                  foreignField: 'tweet_id',
+                  as: 'bookmarks'
+                }
+              },
+              // TODO: Develop like function
+              // {
+              //   $lookup: {
+              //     from: 'likes',
+              //     localField: '_id',
+              //     foreignField: 'tweet_id',
+              //     as: 'likes'
+              //   }
+              // },
+              // ===
+              {
+                $lookup: {
+                  from: process.env.DB_TWEETS_COLLECTION,
+                  localField: '_id',
+                  foreignField: 'parent_id',
+                  as: 'tweet_children'
+                }
+              },
+              {
+                $addFields: {
+                  bookmarks: {
+                    $size: '$bookmarks'
+                  },
+                  // likes: {
+                  //   $size: '$likes'
+                  // },
+                  retweet_count: {
+                    $size: {
+                      $filter: {
+                        input: '$tweet_children',
+                        as: 'item',
+                        cond: {
+                          $eq: ['$$item.type', TweetType.Retweet]
+                        }
+                      }
+                    }
+                  },
+                  comment_count: {
+                    $size: {
+                      $filter: {
+                        input: '$tweet_children',
+                        as: 'item',
+                        cond: {
+                          $eq: ['$$item.type', TweetType.Comment]
+                        }
+                      }
+                    }
+                  },
+                  quote_count: {
+                    $size: {
+                      $filter: {
+                        input: '$tweet_children',
+                        as: 'item',
+                        cond: {
+                          $eq: ['$$item.type', TweetType.QuoteTweet]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                $project: {
+                  tweet_children: 0
+                }
+              }
+            ])
+            .toArray()
           if (!tweet) {
             throw new ErrorWithStatus({
               status: HTTP_STATUS.NOT_FOUND,

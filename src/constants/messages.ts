@@ -81,5 +81,6 @@ export const TWEET_MESSAGE = {
   CREATE_SUCCESS: 'Create tweet successfully',
   BOOKMARK_SUCCESS: 'Bookmark tweet successfully',
   REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully',
-  USER_FORBIDDEN: 'User is not allowed to view this tweet'
+  USER_FORBIDDEN: 'User is not allowed to view this tweet',
+  GET_SUCCESS: 'Get tweet successfully'
 } as const
