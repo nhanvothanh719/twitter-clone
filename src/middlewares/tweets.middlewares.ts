@@ -315,7 +315,9 @@ export const checkTweetAudienceType = wrapRequestHandler(async (req: Request, re
   }
   // Check if the viewer is included in owner's twitter_circle or tweet's author
   const { user_id } = req.decoded_authorization as TokenPayload
-  const isIncludedInTwitterCircle = tweetAuthor.twitter_circle.some((userId) => userId.equals(user_id))
+  // MEMO: Handle for old users who do not have `twitter_circle` field
+  const tweetAuthorTwitterCircle = Array.isArray(tweetAuthor.twitter_circle) ? tweetAuthor.twitter_circle : []
+  const isIncludedInTwitterCircle = tweetAuthorTwitterCircle.some((userId) => userId.equals(user_id))
   const isTweetOwner = tweetAuthor._id.equals(user_id)
   if (!isTweetOwner && !isIncludedInTwitterCircle) {
     throw new ErrorWithStatus({
