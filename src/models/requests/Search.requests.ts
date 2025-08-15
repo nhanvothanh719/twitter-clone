@@ -5,4 +5,5 @@ import { MediaTypeSearchString } from '~/constants/enums'
 export interface SearchRequestQuery extends Pagination, Query {
   content: string
   media_type?: MediaTypeSearchString
+  followed_people?: string
 }

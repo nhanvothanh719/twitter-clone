@@ -8,13 +8,15 @@ class SearchService {
     limit,
     page,
     user_id,
-    media_type
+    media_type,
+    followed_people
   }: {
     content: string
     limit: number
     page: number
     user_id: string
     media_type?: MediaTypeSearchString
+    followed_people?: boolean
   }) {
     const $match: any = {
       $text: {
@@ -29,6 +31,28 @@ class SearchService {
         $match['medias.type'] = {
           $in: [MediaType.Video, MediaType.HLS]
         }
+      }
+    }
+
+    if (typeof followed_people === 'boolean' && followed_people === true) {
+      const followedUsers = await databaseService.followers
+        .find(
+          {
+            user_id: new ObjectId(user_id)
+          },
+          {
+            projection: {
+              followed_user_id: 1
+            }
+          }
+        )
+        .toArray()
+      // Get tweets from current user and followed users
+      const userIds = followedUsers.map((item) => item.followed_user_id)
+      userIds.push(new ObjectId(user_id))
+
+      $match['user_id'] = {
+        $in: userIds
       }
     }
 

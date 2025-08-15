@@ -8,8 +8,11 @@ export const searchTweets = async (req: Request<ParamsDictionary, any, any, Sear
   const page = Number(req.query.page)
   const content = req.query.content ?? ''
   const media_type = req.query?.media_type
+  const followedPeopleString = req.query?.followed_people
+  let followed_people: boolean | undefined = undefined
+  if (followedPeopleString === 'true') followed_people = true
   const user_id = req.decoded_authorization?.user_id as string
-  const result = await searchService.searchTweets({ limit, page, content, user_id, media_type })
+  const result = await searchService.searchTweets({ limit, page, content, user_id, media_type, followed_people })
   return res.json({
     result: {
       tweets: result.tweets,
