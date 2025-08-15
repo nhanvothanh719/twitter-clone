@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { config } from 'dotenv'
 import { ObjectId, WithId } from 'mongodb'
 import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
 import { TweetRequestBody } from '~/models/requests/Tweet.requests'
@@ -9,6 +10,8 @@ import Tweet from '~/models/schemas/Tweet.schema'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import { hashPassword } from '~/utils/crypto'
+
+config()
 
 // Default password
 const PASSWORD = '1234rewq'
@@ -140,14 +143,16 @@ const insertMultipleTweets = async (ids: ObjectId[]) => {
   return result
 }
 
-// TODO: Enable this to insert sample data into database
-// insertMultipleUsers(users).then((ids) => {
-//   followMultipleUsers(new ObjectId(MYID), ids).catch((err) => {
-//     console.error('Error when following users')
-//     console.log(err)
-//   })
-//   insertMultipleTweets(ids).catch((err) => {
-//     console.error('Error when creating tweets')
-//     console.log(err)
-//   })
-// })
+// MEMO: Modify `DB_ENABLE_DATA_SEEDING` value in `.env` to insert sample data
+if (process.env.DB_ENABLE_DATA_SEEDING === 'true') {
+  insertMultipleUsers(users).then((ids) => {
+    followMultipleUsers(new ObjectId(MYID), ids).catch((err) => {
+      console.error('Error when following users')
+      console.log(err)
+    })
+    insertMultipleTweets(ids).catch((err) => {
+      console.error('Error when creating tweets')
+      console.log(err)
+    })
+  })
+}
