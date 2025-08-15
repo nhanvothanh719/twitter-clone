@@ -12,7 +12,11 @@ const searchTweetsValidator = checkSchema(
       isString: {
         errorMessage: TWEET_MESSAGE.CONTENT_MUST_BE_STRING
       },
-      trim: true
+      trim: true,
+      isLength: {
+        options: { min: 1 },
+        errorMessage: TWEET_MESSAGE.CONTENT_MUST_BE_A_NON_EMPTY_STRING
+      }
     },
     media_type: {
       optional: true,
@@ -24,7 +28,7 @@ const searchTweetsValidator = checkSchema(
     followed_people: {
       optional: true,
       isIn: {
-        options: ['true', 'false']
+        options: [['true', 'false']]
       },
       errorMessage: `Followed people must be 'true' or 'false'`
     }
