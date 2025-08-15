@@ -9,6 +9,7 @@ import { UPLOAD_VIDEO_FOLDER_PATH } from './constants/paths'
 import assetsRouter from './routes/assets.routes'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
+import '~/utils/faker'
 
 config()
 const app = express()
