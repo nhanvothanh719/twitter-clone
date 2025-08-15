@@ -4,7 +4,6 @@ import Tweet from '~/models/schemas/Tweet.schema'
 import { ObjectId, WithId } from 'mongodb'
 import Hashtag from '~/models/schemas/Hashtag.schema'
 import { TweetType } from '~/constants/enums'
-import { count } from 'console'
 
 class TweetsService {
   async createTweet(payload: TweetRequestBody, userId: string) {
@@ -98,7 +97,7 @@ class TweetsService {
         },
         {
           $lookup: {
-            from: 'hashtags',
+            from: process.env.DB_HASHTAGS_COLLECTION as string,
             localField: 'hashtags',
             foreignField: '_id',
             as: 'hashtags'
@@ -106,7 +105,7 @@ class TweetsService {
         },
         {
           $lookup: {
-            from: 'users',
+            from: process.env.DB_USERS_COLLECTION as string,
             localField: 'mentions',
             foreignField: '_id',
             as: 'mentions'
@@ -130,23 +129,23 @@ class TweetsService {
         },
         {
           $lookup: {
-            from: 'bookmarks',
+            from: process.env.DB_BOOKMARKS_COLLECTION as string,
             localField: '_id',
             foreignField: 'tweet_id',
             as: 'bookmarks'
           }
         },
+        // {
+        //   $lookup: {
+        //     from: 'likes',
+        //     localField: '_id',
+        //     foreignField: 'tweet_id',
+        //     as: 'likes'
+        //   }
+        // },
         {
           $lookup: {
-            from: 'likes',
-            localField: '_id',
-            foreignField: 'tweet_id',
-            as: 'likes'
-          }
-        },
-        {
-          $lookup: {
-            from: 'tweets',
+            from: process.env.DB_TWEETS_COLLECTION as string,
             localField: '_id',
             foreignField: 'parent_id',
             as: 'tweet_children'
@@ -272,7 +271,7 @@ class TweetsService {
           },
           {
             $lookup: {
-              from: 'users',
+              from: process.env.DB_USERS_COLLECTION as string,
               localField: 'user_id',
               foreignField: '_id',
               as: 'tweet_owner'
@@ -312,7 +311,7 @@ class TweetsService {
           },
           {
             $lookup: {
-              from: 'hashtags',
+              from: process.env.DB_HASHTAGS_COLLECTION as string,
               localField: 'hashtags',
               foreignField: '_id',
               as: 'hashtags'
@@ -320,7 +319,7 @@ class TweetsService {
           },
           {
             $lookup: {
-              from: 'users',
+              from: process.env.DB_USERS_COLLECTION as string,
               localField: 'mentions',
               foreignField: '_id',
               as: 'mentions'
@@ -344,23 +343,23 @@ class TweetsService {
           },
           {
             $lookup: {
-              from: 'bookmarks',
+              from: process.env.DB_BOOKMARKS_COLLECTION as string,
               localField: '_id',
               foreignField: 'tweet_id',
               as: 'bookmarks'
             }
           },
+          // {
+          //   $lookup: {
+          //     from: 'likes',
+          //     localField: '_id',
+          //     foreignField: 'tweet_id',
+          //     as: 'likes'
+          //   }
+          // },
           {
             $lookup: {
-              from: 'likes',
-              localField: '_id',
-              foreignField: 'tweet_id',
-              as: 'likes'
-            }
-          },
-          {
-            $lookup: {
-              from: 'tweets',
+              from: process.env.DB_TWEETS_COLLECTION as string,
               localField: '_id',
               foreignField: 'parent_id',
               as: 'tweet_children'
@@ -434,7 +433,7 @@ class TweetsService {
           },
           {
             $lookup: {
-              from: 'users',
+              from: process.env.DB_USERS_COLLECTION as string,
               localField: 'user_id',
               foreignField: '_id',
               as: 'tweet_owner'
@@ -496,7 +495,7 @@ class TweetsService {
 
     return {
       tweets,
-      total: total[0].total_tweets
+      total: Number(total[0].total_tweets)
     }
   }
 }
