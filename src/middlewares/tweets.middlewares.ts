@@ -124,6 +124,10 @@ const createTweetValidator = checkSchema(
     },
     medias: {
       isArray: true,
+      isLength: {
+        options: { max: 4 },
+        errorMessage: TWEET_MESSAGE.MEDIAS_TOO_MANY
+      },
       custom: {
         options: (value, { req }) => {
           // Check if every item in `medias` is Media object

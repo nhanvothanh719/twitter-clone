@@ -78,6 +78,7 @@ export const TWEET_MESSAGE = {
   HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string items',
   MENTIONS_CONTAIN_INVALID_USER_ID: 'Mentions contain invalid user id',
   MEDIAS_INVALID: 'Medias must be an array of Media objects',
+  MEDIAS_TOO_MANY: 'Maximum uploaded medias allowed to upload is 4',
   CREATE_SUCCESS: 'Create tweet successfully',
   BOOKMARK_SUCCESS: 'Bookmark tweet successfully',
   REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully',
