@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { checkSchema } from 'express-validator'
+import { checkSchema, ParamSchema } from 'express-validator'
 import _ from 'lodash'
 import { ObjectId } from 'mongodb'
 import { MediaType, TweetAudience, TweetType, UserVerifyStatus } from '~/constants/enums'
@@ -23,14 +23,42 @@ const tweetTypeIds = enumToNumbersArray(TweetType)
 const tweetAudienceIds = enumToNumbersArray(TweetAudience)
 const mediaTypeIds = enumToNumbersArray(MediaType)
 
+const tweetTypeSchema: ParamSchema = {
+  isIn: {
+    options: [tweetTypeIds],
+    errorMessage: TWEET_MESSAGE.TYPE_INVALID
+  }
+}
+
+const pageSchema: ParamSchema = {
+  isNumeric: true,
+  custom: {
+    options: (value) => {
+      const pageValue = Number(value)
+      if (pageValue < 1) {
+        throw new Error(TWEET_MESSAGE.PAGE_INVALID)
+      }
+      return true
+    }
+  }
+}
+
+const limitSchema: ParamSchema = {
+  isNumeric: true,
+  custom: {
+    options: (value) => {
+      const limitValue = Number(value)
+      if (limitValue < 1 || limitValue > 100) {
+        throw new Error(TWEET_MESSAGE.LIMIT_INVALID)
+      }
+      return true
+    }
+  }
+}
+
 const createTweetValidator = checkSchema(
   {
-    type: {
-      isIn: {
-        options: [tweetTypeIds],
-        errorMessage: TWEET_MESSAGE.TYPE_INVALID
-      }
-    },
+    type: tweetTypeSchema,
     audience: {
       isIn: {
         options: [tweetAudienceIds],
@@ -295,37 +323,19 @@ export const checkTweetAudienceType = wrapRequestHandler(async (req: Request, re
 
 const getChildTweetsValidator = checkSchema(
   {
-    tweet_type: {
-      isIn: {
-        options: [tweetTypeIds],
-        errorMessage: TWEET_MESSAGE.TYPE_INVALID
-      }
-    },
-    limit: {
-      isNumeric: true,
-      custom: {
-        options: (value) => {
-          const limitValue = Number(value)
-          if (limitValue < 1 || limitValue > 100) {
-            throw new Error(TWEET_MESSAGE.LIMIT_INVALID)
-          }
-          return true
-        }
-      }
-    },
-    page: {
-      isNumeric: true,
-      custom: {
-        options: (value) => {
-          const pageValue = Number(value)
-          if (pageValue < 1) {
-            throw new Error(TWEET_MESSAGE.PAGE_INVALID)
-          }
-          return true
-        }
-      }
-    }
+    tweet_type: tweetTypeSchema,
+    limit: limitSchema,
+    page: pageSchema
   },
   ['query']
 )
 export const validateGetChildTweets = validate(getChildTweetsValidator)
+
+const getTweetsInNewsFeedValidator = checkSchema(
+  {
+    limit: limitSchema,
+    page: pageSchema
+  },
+  ['query']
+)
+export const validateGetTweetsInNewsFeed = validate(getTweetsInNewsFeedValidator)

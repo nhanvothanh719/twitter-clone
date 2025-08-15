@@ -16,8 +16,11 @@ export interface TweetRequestParams extends ParamsDictionary {
   tweet_id: string
 }
 
-export interface GetChildTweetsRequestQuery extends Query {
+export interface GetChildTweetsRequestQuery extends Query, Pagination {
+  tweet_type: string
+}
+
+export interface Pagination extends Query {
   page: string
   limit: string
-  tweet_type: string
 }

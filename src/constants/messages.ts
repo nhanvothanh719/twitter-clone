@@ -84,6 +84,7 @@ export const TWEET_MESSAGE = {
   USER_FORBIDDEN: 'User is not allowed to view this tweet',
   GET_SUCCESS: 'Get tweet successfully',
   GET_CHILDREN_SUCCESS: 'Get tweet children successfully',
+  GET_NEW_FEEDS_SUCCESS: 'Get tweets in news feed successfully',
   LIMIT_INVALID: 'Limit must be greater than 0 and less than 100',
   PAGE_INVALID: 'Page must be greater than 0'
 } as const

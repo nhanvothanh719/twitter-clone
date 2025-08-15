@@ -3,10 +3,14 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { TweetType } from '~/constants/enums'
 import { TWEET_MESSAGE } from '~/constants/messages'
-import { GetChildTweetsRequestQuery, TweetRequestBody, TweetRequestParams } from '~/models/requests/Tweet.requests'
+import {
+  GetChildTweetsRequestQuery,
+  Pagination,
+  TweetRequestBody,
+  TweetRequestParams
+} from '~/models/requests/Tweet.requests'
 import { TokenPayload } from '~/models/requests/User.requests'
 import Tweet from '~/models/schemas/Tweet.schema'
-import databaseService from '~/services/database.services'
 import tweetsService from '~/services/tweets.services'
 
 export const createTweetController = async (req: Request<ParamsDictionary, any, TweetRequestBody>, res: Response) => {
@@ -57,6 +61,26 @@ export const getChildTweetsController = async (
       limit,
       page,
       total,
+      total_pages
+    }
+  })
+}
+
+export const getTweetsInNewsFeedController = async (
+  req: Request<ParamsDictionary, any, any, Pagination>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const limit = Number(req.query.limit)
+  const page = Number(req.query.page)
+  const result = await tweetsService.getTweetsInNewsFeed({ user_id, page, limit })
+  const total_pages = Math.ceil(result.total / limit)
+  return res.json({
+    message: TWEET_MESSAGE.GET_NEW_FEEDS_SUCCESS,
+    result: {
+      ...result,
+      limit,
+      page,
       total_pages
     }
   })
