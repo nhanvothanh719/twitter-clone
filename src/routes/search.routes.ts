@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { searchTweets } from '~/controllers/search.controllers'
+import { validateSearchTweets } from '~/middlewares/search.middlewares'
 import { validateAccessToken, validateVerifiedUser } from '~/middlewares/users.middlewares'
 
 const searchRouter = Router()
@@ -10,6 +11,6 @@ const searchRouter = Router()
  * Header: { Authorization: Bearer <access_token> }
  * Body: Query: { limit: number, page: number, content: string, media_type: MediaTypeSearchString }
  */
-searchRouter.get('/', validateAccessToken, validateVerifiedUser, searchTweets)
+searchRouter.get('/', validateAccessToken, validateVerifiedUser, validateSearchTweets, searchTweets)
 
 export default searchRouter
