@@ -82,30 +82,36 @@ class DatabaseService {
   async addIndexToUsersCollection() {
     // Check and create compound index (email_1_password_1) on `email` and `password` fields in ascending order
     const hasCompoundIndex = await this.users.indexExists('email_1_password_1')
-    if (!hasCompoundIndex) this.users.createIndex({ email: 1, password: 1 })
+    if (!hasCompoundIndex) this.users.createIndex({ email: 1, password: 1 }, { name: 'email_1_password_1' })
 
     // Check and create single index on the `email` and `username` field in ascending order with unique constraint
     const hasEmailIndex = await this.users.indexExists('email_1')
-    if (!hasEmailIndex) this.users.createIndex({ email: 1 }, { unique: true })
+    if (!hasEmailIndex) this.users.createIndex({ email: 1 }, { unique: true, name: 'email_1' })
 
     const hasUsernameIndex = await this.users.indexExists('username_1')
-    if (!hasUsernameIndex) this.users.createIndex({ username: 1 }, { unique: true })
+    if (!hasUsernameIndex) this.users.createIndex({ username: 1 }, { unique: true, name: 'username_1' })
   }
 
   async addIndexToRefreshTokensCollection() {
     const hasTokenIndex = await this.refreshTokens.indexExists('token_1')
-    if (!hasTokenIndex) this.refreshTokens.createIndex({ token: 1 })
+    if (!hasTokenIndex) this.refreshTokens.createIndex({ token: 1 }, { name: 'token_1' })
 
     // MEMO: Check and create Time-To-Live (TTL) index
     const hasTimeToLiveExpIndex = await this.refreshTokens.indexExists('exp_1')
     // MEMO: MongoDB will delete document automatically when the value of `exp` field <= current time
     // MEMO: expireAfterSeconds: 0 means deletion occurs as soon as `exp` is reached (±60s delay due to TTL monitor)
-    if (!hasTimeToLiveExpIndex) this.refreshTokens.createIndex({ exp: 1 }, { expireAfterSeconds: 0 })
+    if (!hasTimeToLiveExpIndex) this.refreshTokens.createIndex({ exp: 1 }, { expireAfterSeconds: 0, name: 'exp_1' })
   }
 
   async addIndexToFollowersCollection() {
     const hasCompoundIndex = await this.followers.indexExists('user_id_1_followed_user_id_1')
-    if (!hasCompoundIndex) this.followers.createIndex({ user_id: 1, followed_user_id: 1 })
+    if (!hasCompoundIndex)
+      this.followers.createIndex({ user_id: 1, followed_user_id: 1 }, { name: 'user_id_1_followed_user_id_1' })
+  }
+
+  async addTextIndexToTweetsCollection() {
+    const hasTextIndex = await this.tweets.indexExists('content_text')
+    if (!hasTextIndex) this.tweets.createIndex({ content: 'text' }, { name: 'content_text', default_language: 'none' })
   }
 }
 

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { ObjectId } from 'mongodb'
 import { TweetType } from '~/constants/enums'
 import { TWEET_MESSAGE } from '~/constants/messages'
 import {
