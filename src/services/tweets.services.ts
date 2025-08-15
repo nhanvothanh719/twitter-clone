@@ -156,9 +156,9 @@ class TweetsService {
             bookmarks: {
               $size: '$bookmarks'
             },
-            likes: {
-              $size: '$likes'
-            },
+            // likes: {
+            //   $size: '$likes'
+            // },
             retweet_count: {
               $size: {
                 $filter: {
@@ -370,9 +370,9 @@ class TweetsService {
               bookmarks: {
                 $size: '$bookmarks'
               },
-              likes: {
-                $size: '$likes'
-              },
+              // likes: {
+              //   $size: '$likes'
+              // },
               retweet_count: {
                 $size: {
                   $filter: {
