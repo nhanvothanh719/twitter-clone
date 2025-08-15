@@ -14,9 +14,9 @@ import { hashPassword } from '~/utils/crypto'
 config()
 
 // Default password
-const PASSWORD = '1234rewq'
-// ID of a user who follows others
-const MYID = new ObjectId('6897f422d56d64a5466ddf9d')
+const PASSWORD = process.env.DB_DEFAULT_USER_PASSWORD as string
+// TODO: ID of a user who follows others
+const MY_ID = new ObjectId('6897f422d56d64a5466ddf9d')
 
 // Number of created users
 const USER_COUNT = 200
@@ -146,7 +146,7 @@ const insertMultipleTweets = async (ids: ObjectId[]) => {
 // MEMO: Modify `DB_ENABLE_DATA_SEEDING` value in `.env` to insert sample data
 if (process.env.DB_ENABLE_DATA_SEEDING === 'true') {
   insertMultipleUsers(users).then((ids) => {
-    followMultipleUsers(new ObjectId(MYID), ids).catch((err) => {
+    followMultipleUsers(new ObjectId(MY_ID), ids).catch((err) => {
       console.error('Error when following users')
       console.log(err)
     })
