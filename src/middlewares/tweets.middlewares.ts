@@ -30,7 +30,7 @@ const tweetTypeSchema: ParamSchema = {
   }
 }
 
-const pageSchema: ParamSchema = {
+export const pageSchema: ParamSchema = {
   isNumeric: true,
   custom: {
     options: (value) => {
@@ -43,7 +43,7 @@ const pageSchema: ParamSchema = {
   }
 }
 
-const limitSchema: ParamSchema = {
+export const limitSchema: ParamSchema = {
   isNumeric: true,
   custom: {
     options: (value) => {

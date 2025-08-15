@@ -495,7 +495,7 @@ class TweetsService {
 
     return {
       tweets,
-      total: Number(total[0].total_tweets)
+      total: total[0]?.total_tweets ? Number(total[0].total_tweets) : 0
     }
   }
 }

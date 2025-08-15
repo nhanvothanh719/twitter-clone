@@ -9,6 +9,7 @@ import { UPLOAD_VIDEO_FOLDER_PATH } from './constants/paths'
 import assetsRouter from './routes/assets.routes'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
+import searchRouter from './routes/search.routes'
 import '~/utils/faker'
 
 config()
@@ -24,6 +25,7 @@ databaseService
     databaseService.addIndexToUsersCollection()
     databaseService.addIndexToRefreshTokensCollection()
     databaseService.addIndexToFollowersCollection()
+    databaseService.addTextIndexToTweetsCollection()
   })
   .catch(console.dir)
 
@@ -39,6 +41,7 @@ app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
+app.use('/search', searchRouter)
 
 // === Error-handling middleware ===
 // - Catch errors from all previous routes or middlewares
