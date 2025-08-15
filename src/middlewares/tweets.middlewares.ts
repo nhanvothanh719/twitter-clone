@@ -83,6 +83,7 @@ const createTweetValidator = checkSchema(
       isString: {
         errorMessage: TWEET_MESSAGE.CONTENT_MUST_BE_STRING
       },
+      trim: true,
       custom: {
         options: (value, { req }) => {
           const type = req.body.type as TweetType
@@ -304,7 +305,7 @@ export const checkTweetAudienceType = wrapRequestHandler(async (req: Request, re
   }
   // Check if tweet's owner is banned or deleted
   const tweetAuthor = await databaseService.users.findOne({
-    _id: new ObjectId(tweet.user_id)
+    _id: tweet.user_id
   })
   if (!tweetAuthor || tweetAuthor.verify_status === UserVerifyStatus.Banned) {
     throw new ErrorWithStatus({
