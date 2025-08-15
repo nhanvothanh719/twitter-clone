@@ -64,7 +64,7 @@ class SearchService {
           },
           {
             $lookup: {
-              from: 'users',
+              from: process.env.DB_USERS_COLLECTION as string,
               localField: 'user_id',
               foreignField: '_id',
               as: 'tweet_owner'
@@ -98,7 +98,7 @@ class SearchService {
           },
           {
             $lookup: {
-              from: 'hashtags',
+              from: process.env.DB_HASHTAGS_COLLECTION as string,
               localField: 'hashtags',
               foreignField: '_id',
               as: 'hashtags'
@@ -106,7 +106,7 @@ class SearchService {
           },
           {
             $lookup: {
-              from: 'users',
+              from: process.env.DB_USERS_COLLECTION as string,
               localField: 'mentions',
               foreignField: '_id',
               as: 'mentions'
@@ -130,23 +130,23 @@ class SearchService {
           },
           {
             $lookup: {
-              from: 'bookmarks',
+              from: process.env.DB_BOOKMARKS_COLLECTION as string,
               localField: '_id',
               foreignField: 'tweet_id',
               as: 'bookmarks'
             }
           },
+          // {
+          //   $lookup: {
+          //     from: 'likes',
+          //     localField: '_id',
+          //     foreignField: 'tweet_id',
+          //     as: 'likes'
+          //   }
+          // },
           {
             $lookup: {
-              from: 'likes',
-              localField: '_id',
-              foreignField: 'tweet_id',
-              as: 'likes'
-            }
-          },
-          {
-            $lookup: {
-              from: 'tweets',
+              from: process.env.DB_TWEETS_COLLECTION as string,
               localField: '_id',
               foreignField: 'parent_id',
               as: 'tweet_children'
@@ -157,9 +157,9 @@ class SearchService {
               bookmarks: {
                 $size: '$bookmarks'
               },
-              likes: {
-                $size: '$likes'
-              },
+              // likes: {
+              //   $size: '$likes'
+              // },
               retweet_count: {
                 $size: {
                   $filter: {
@@ -222,7 +222,7 @@ class SearchService {
           },
           {
             $lookup: {
-              from: 'users',
+              from: process.env.DB_USERS_COLLECTION as string,
               localField: 'user_id',
               foreignField: '_id',
               as: 'tweet_owner'
