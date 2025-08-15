@@ -1,14 +1,14 @@
 import { Router } from 'express'
-import { searchTweetsByContentController } from '~/controllers/search.controllers'
+import { searchTweets } from '~/controllers/search.controllers'
 
 const searchRouter = Router()
 
 /**
- * Description: Search tweets by content
+ * Description: Search tweets by content, media_type
  * Path: /search
  * Header:
- * Body: Query: { limit: number, page: number, content: string }
+ * Body: Query: { limit: number, page: number, content: string, media_type: MediaTypeSearchString }
  */
-searchRouter.get('/', searchTweetsByContentController)
+searchRouter.get('/', searchTweets)
 
 export default searchRouter
