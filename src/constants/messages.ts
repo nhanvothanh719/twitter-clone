@@ -61,5 +61,31 @@ export const USER_MESSAGE = {
   USER_FOLLOW_NOT_EXIST: 'You have not followed this user yet',
   USER_UNFOLLOW_SUCCESS: 'Unfollow this user successfully',
   GMAIL_UNVERIFIED: 'Gmail has not been verified',
-  UPLOADED_FILE_TYPE_INVALID: 'Invalid uploaded file type'
+  UPLOADED_FILE_TYPE_INVALID: 'Invalid uploaded file type',
+  USER_UNAUTHORIZED: 'User is not authorized'
+} as const
+
+export const TWEET_MESSAGE = {
+  ID_INVALID: 'Invalid tweet id',
+  TWEET_NOT_FOUND: 'Tweet not found',
+  TYPE_INVALID: 'Type of this tweet is not valid',
+  AUDIENCE_INVALID: 'Audience of this tweet is not valid',
+  PARENT_ID_INVALID: 'Parent ID must be a valid tweet id',
+  PARENT_ID_MUST_BE_NULL: 'Parent ID must be null',
+  CONTENT_MUST_BE_STRING: 'Content must be a string',
+  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Content must be a non-empty string',
+  CONTENT_MUST_BE_AN_EMPTY_STRING: 'Content must be an empty string',
+  HASHTAGS_MUST_BE_AN_ARRAY_OF_STRING: 'Hashtags must be an array of string items',
+  MENTIONS_CONTAIN_INVALID_USER_ID: 'Mentions contain invalid user id',
+  MEDIAS_INVALID: 'Medias must be an array of Media objects',
+  MEDIAS_TOO_MANY: 'Maximum uploaded medias allowed to upload is 4',
+  CREATE_SUCCESS: 'Create tweet successfully',
+  BOOKMARK_SUCCESS: 'Bookmark tweet successfully',
+  REMOVE_BOOKMARK_SUCCESS: 'Remove bookmark successfully',
+  USER_FORBIDDEN: 'User is not allowed to view this tweet',
+  GET_SUCCESS: 'Get tweet successfully',
+  GET_CHILDREN_SUCCESS: 'Get tweet children successfully',
+  GET_NEW_FEEDS_SUCCESS: 'Get tweets in news feed successfully',
+  LIMIT_INVALID: 'Limit must be greater than 0 and less than 100',
+  PAGE_INVALID: 'Page must be greater than 0'
 } as const

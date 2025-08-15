@@ -17,7 +17,7 @@ import {
   googleOauthController,
   refreshTokenController
 } from '~/controllers/users.controllers'
-import { fieldsFilter } from '~/middlewares/common.middleware'
+import { fieldsFilter } from '~/middlewares/common.middlewares'
 import {
   validateAccessToken,
   validateChangePassword,

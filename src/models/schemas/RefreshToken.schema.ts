@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-interface IRefreshToken {
+interface RefreshTokenPayload {
   _id?: ObjectId
   token: string
   user_id: ObjectId
@@ -17,7 +17,7 @@ export default class RefreshToken {
   iat: Date
   exp: Date
 
-  constructor({ token, user_id, created_at, iat, exp }: IRefreshToken) {
+  constructor({ token, user_id, created_at, iat, exp }: RefreshTokenPayload) {
     this.token = token
     this.user_id = user_id
     this.created_at = created_at || new Date()

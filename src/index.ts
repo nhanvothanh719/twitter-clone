@@ -7,6 +7,9 @@ import { initFolder } from './utils/file'
 import { config } from 'dotenv'
 import { UPLOAD_VIDEO_FOLDER_PATH } from './constants/paths'
 import assetsRouter from './routes/assets.routes'
+import tweetsRouter from './routes/tweets.routes'
+import bookmarksRouter from './routes/bookmarks.routes'
+import '~/utils/faker'
 
 config()
 const app = express()
@@ -34,6 +37,8 @@ app.use(express.json())
 app.use('/assets', assetsRouter)
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
+app.use('/bookmarks', bookmarksRouter)
 
 // === Error-handling middleware ===
 // - Catch errors from all previous routes or middlewares
