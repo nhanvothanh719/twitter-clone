@@ -65,7 +65,7 @@ class DatabaseService {
     if (!bookmarksCollectionName) {
       throw new Error('DB_BOOKMARKS_COLLECTION is not set in .env file')
     }
-    return this.db.collection(bookmarksCollectionName)
+    return this.db.collection<Bookmark>(bookmarksCollectionName)
   }
 
   async checkDBConnection() {
@@ -88,7 +88,7 @@ class DatabaseService {
     const hasEmailIndex = await this.users.indexExists('email_1')
     if (!hasEmailIndex) this.users.createIndex({ email: 1 }, { unique: true })
 
-    const hasUsernameIndex = await this.users.indexExists('email_1')
+    const hasUsernameIndex = await this.users.indexExists('username_1')
     if (!hasUsernameIndex) this.users.createIndex({ username: 1 }, { unique: true })
   }
 
