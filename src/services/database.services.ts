@@ -6,6 +6,7 @@ import Follower from '~/models/schemas/Follower.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import Hashtag from '~/models/schemas/Hashtag.schema'
 import Bookmark from '~/models/schemas/Bookmark.schema'
+import { ErrorWithStatus } from '~/models/Errors'
 
 // MEMO: Load `.env` file
 config()
@@ -25,22 +26,46 @@ class DatabaseService {
   }
 
   get users(): Collection<User> {
-    return this.db.collection(process.env.DB_USERS_COLLECTION as string)
+    const usersCollectionName = process.env.DB_USERS_COLLECTION
+    if (!usersCollectionName) {
+      throw new Error('DB_USERS_COLLECTION is not set in .env file')
+    }
+    return this.db.collection<User>(usersCollectionName)
   }
   get refreshTokens(): Collection<RefreshToken> {
-    return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
+    const refreshTokensCollectionName = process.env.DB_REFRESH_TOKENS_COLLECTION
+    if (!refreshTokensCollectionName) {
+      throw new Error('DB_REFRESH_TOKENS_COLLECTION is not set in .env file')
+    }
+    return this.db.collection<RefreshToken>(refreshTokensCollectionName)
   }
   get followers(): Collection<Follower> {
-    return this.db.collection(process.env.DB_FOLLOWERS_COLLECTION as string)
+    const followersCollectionName = process.env.DB_FOLLOWERS_COLLECTION
+    if (!followersCollectionName) {
+      throw new Error('DB_FOLLOWERS_COLLECTION is not set in .env file')
+    }
+    return this.db.collection<Follower>(followersCollectionName)
   }
   get tweets(): Collection<Tweet> {
-    return this.db.collection(process.env.DB_TWEETS_COLLECTION as string)
+    const tweetsCollectionName = process.env.DB_TWEETS_COLLECTION
+    if (!tweetsCollectionName) {
+      throw new Error('DB_TWEETS_COLLECTION is not set in .env file')
+    }
+    return this.db.collection<Tweet>(tweetsCollectionName)
   }
   get hashtags(): Collection<Hashtag> {
-    return this.db.collection(process.env.DB_HASHTAGS_COLLECTION as string)
+    const hashtagsCollectionName = process.env.DB_HASHTAGS_COLLECTION
+    if (!hashtagsCollectionName) {
+      throw new Error('DB_HASHTAGS_COLLECTION is not set in .env file')
+    }
+    return this.db.collection<Hashtag>(hashtagsCollectionName)
   }
   get bookmarks(): Collection<Bookmark> {
-    return this.db.collection(process.env.DB_BOOKMARKS_COLLECTION as string)
+    const bookmarksCollectionName = process.env.DB_BOOKMARKS_COLLECTION
+    if (!bookmarksCollectionName) {
+      throw new Error('DB_BOOKMARKS_COLLECTION is not set in .env file')
+    }
+    return this.db.collection(bookmarksCollectionName)
   }
 
   async checkDBConnection() {
